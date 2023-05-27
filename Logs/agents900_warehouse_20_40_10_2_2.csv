@@ -1,0 +1,2 @@
+map_name,map_size,obstacles_number,num_agents,solver,solved,sum of cost,makespan,simulation_time
+warehouse-20-40-10-2-2,340x164,17004,900,Bovl,True,162246,446,380.4645621776581

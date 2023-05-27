@@ -1,0 +1,3 @@
+[submodule "GA"]
+	path = GA
+	url = https://github.com/UlrichFarhadi/GA_MAPF.git

@@ -1,0 +1,2 @@
+map_name,map_size,obstacles_number,num_agents,solver,solved,sum of cost,makespan,simulation_time
+ost003d,194x194,24422,300,Bovl,False,67175,1000,86.05112299999746

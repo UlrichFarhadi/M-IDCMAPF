@@ -1,0 +1,2 @@
+map_name,map_size,obstacles_number,num_agents,solver,solved,sum of cost,makespan,simulation_time
+random-64-64-20,64x64,826,400,Bovl,True,27368,175,58.65369649999775

@@ -1,0 +1,8 @@
+dask[complete]
+matplotlib==3.5.0
+networkit==10.1
+networkx==2.8.8
+numpy==1.23.3
+opencv_python==4.6.0.66
+scipy==1.10.1
+tqdm==4.64.0
