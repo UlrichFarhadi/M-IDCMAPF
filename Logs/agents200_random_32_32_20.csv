@@ -1,2 +1,0 @@
-map_name,map_size,obstacles_number,num_agents,solver,solved,sum of cost,makespan,simulation_time
-random-32-32-20,32x32,205,200,Bovl,True,11244,168,24.403337000054307
