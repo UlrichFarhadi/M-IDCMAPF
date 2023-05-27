@@ -3,6 +3,7 @@
 This repository contains the code for the M-IDCMAPF algorithm.
 
 This below is an example video:
+
 [![M-IDCMAPF](https://img.youtube.com/vi/5QSAsHZA1K8/0.jpg)](https://www.youtube.com/watch?v=5QSAsHZA1K8)
 
 
