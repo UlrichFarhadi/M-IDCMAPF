@@ -28,15 +28,12 @@ class Swarm:
         self.agents: List[amount_of_agents] = []
         self.map = map
         self.generate_agents()
-        #bug hunting TODO remove
         self.start = []
         self.target = []
     
     def move_all_agents(self, step):
         for agent in self.agents:
-            agent.move(step)
-            # call agent.move() method and check if it returns False
-            # if so, assign a new goal position or make it stand still     
+            agent.move(step)  
     
     def generate_agents(self):
         # Generate a list of Agent objects and add them to self.agents
@@ -55,7 +52,6 @@ class Swarm:
                 node_tag = random.choice(start_positions)
                 start_positions.remove(node_tag)
                 agent.position = node_tag
-                #bug hunting TODO remove
                 self.start.append(node_tag)
                 self.map.map.nodes[node_tag]["agent"] = agent
         else:
@@ -77,9 +73,7 @@ class Swarm:
                 node_tag = random.choice(target_positions)
                 target_positions.remove(node_tag)
                 agent.target = node_tag
-                #bug hunting TODO remove
                 self.target.append(node_tag)
-                #self.map.map.nodes[node_tag]["target"] = True
                 self.map.map.nodes[node_tag]["target"] = agent.color
         else:
             assert len(target_positions) == self.amount_of_agents, f"Expected {self.amount_of_agents} elements in list (target_positions), but got {len(target_positions)} instead"
@@ -91,16 +85,6 @@ class Swarm:
                 self.map.map.nodes[node_tag]["target"] = agent.color
     
     def calculate_agent_path(self, agent):
-        # Use A* to calculate path between each agenet start and goal position
-        # astar = nk.distance.AStar(self.map.G_nk, self.map.nk_heuristic, self.map.nk_node_id[agent.position], self.map.nk_node_id[agent.target])
-        # astar.run()
-        # path = []
-        # for node_id in astar.getPath():
-        #     path.append(self.map.nk_reverse_node_id[node_id])
-        # path.append(agent.target)
-        # if agent.position == agent.target:
-        #     path = []
-        # return path
         return nx.astar_path(self.map.map, agent.position, agent.target, heuristic=agent.a_star_heuristic)[1:] #removes the first element because A* includes its own cell in the path
 
     def calculate_all_agent_paths(self):

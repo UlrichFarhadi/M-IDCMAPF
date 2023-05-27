@@ -61,9 +61,6 @@ class Map:
                         my_map.nodes[(x, y)]["obstacle"] = True
                     else:
                         self.free_nodes.append((x,  y ))
-                        
-        #print(self.free_nodes)
-            #     logging.info("World generated")
 
         self.map = my_map
 
@@ -80,27 +77,12 @@ class Map:
         self.generate_map(self.current_map_file)
     
     def update_agent_on_map(self, agent, pos_prev, pos_next):
-        # NOT TO FUTURE SELF: remember to move the agent object from prev to next
-
-        # An Error ocure do to the prev and next is the same because of a* and line 31 in agent
-        # Solution: added if stament works
-
-        # New problem if two agent are in the same position, one of them are deleted
-        # Solution: added agent as input and pass a self ref in agent
-
         if pos_prev != pos_next: # BECAUSE A* RETURNS THE START POSITION, REMEMBER TO CHANGE ASSERT LATER
-            #agent = self.map.nodes[pos_prev]["agent"]
+            
             self.map.nodes[pos_next]["agent"] = agent
             if self.map.nodes[pos_prev]["agent"] is agent:
                 self.map.nodes[pos_prev]["agent"] = None
         else:
             self.map.nodes[pos_next]["agent"] = agent
 
-
-            ######## Same code as above ###########
-            # agent = self.map.nodes[pos_prev]["agent"]        
-            ### Set the agent object at the pos_next node
-            # nx.set_node_attributes(self.map, {pos_next: {"agent": agent}})
-            ### Remove the agent object from the pos_prev node
-            # nx.set_node_attributes(self.map, {pos_prev: {"agent": None}})
 

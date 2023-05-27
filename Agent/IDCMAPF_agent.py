@@ -29,19 +29,16 @@ class IDCMAPF_agent(Agent):
         super().__init__(map)
         self.give_way_node = None
 
-        #self.robot_executed = False
-        
-        #self.number_followers: int = 0
         self.leader: Agent = None
         self.priority = None
         self.neighboring_agents = []
         self.action = None 
         self.follower = None
         self.path_history = []
-        self.waiting_time: int = 0                          # numberWaitingtime
-        self.waiting_threshold = waiting_threshold          # waitngThreshold
-        self.repetition_threshold = repetition_threshold    # repetitionThreshold
-        self.repeated_window = repeated_window              # l (How many nodes should we look back in the path when seaching for repeated nodes)
+        self.waiting_time: int = 0                          
+        self.waiting_threshold = waiting_threshold          
+        self.repetition_threshold = repetition_threshold    
+        self.repeated_window = repeated_window              
         self.direction = None
         self.id: int = None
         self.wait_propagated_flag: bool = False
@@ -59,18 +56,12 @@ class IDCMAPF_agent(Agent):
             raise KeyError("Length not the same")
 
     def change_rule_order(self, rule_order):
-        #self.rule_list = copy.copy(self.initial_rule_list)
         if len(self.rule_list) == len(rule_order):
             self.rule_list = [self.initial_rule_list[i] for i in rule_order]
         else:
             raise KeyError("Length not the same")
 
     def move(self, step):
-        # print(self.id)
-        # if (self.id == 3 or self.id == 1) and step >= 5:
-        #     print("EYY")
-        # if step >= 250:
-        #     print(self.id)
         self.step += 1
         # Find neighboring agents and store their references so we have their info
         self.find_neighboring_agents()
@@ -115,13 +106,10 @@ class IDCMAPF_agent(Agent):
             elif self.check_blocked_neighbor():
                 self.give_way_idle_robot()
             else:
-                # Check the neighborhood and see if any robots are moving, if not, then reset the path history (not sure if this is a good idea since a detour might be longer and therefore cause livelocks)
-                #self.path_history = [] # Reset path history if no action is going on in the surrounding t+2 neighborhood
-                #self.check_consecutive_waits()  # If livelocks start appearing --> REMOVE THIS LINE
                 self.action = "wait"
                 self.idle_blocked = False
         else:
-            # CHECK THE FOLLOWER THING
+            # Check if a follower has a longer path than "this" robot. If so, give way to the follower.
             self.get_follower() # Updates the follower, sets it to None if there is no follower
             if self.follower is not None:
                 if len(self.follower.path) > len(self.path):
@@ -146,7 +134,6 @@ class IDCMAPF_agent(Agent):
                 detour_target = add_random_offset(coordinate_tuple=self.position, z=self.detour_constant)
                 if detour_target in self.map.free_nodes:
                     if self.map.map.nodes[detour_target].get("target") is None: # Do not detour to another agents target, since it will increase sum of costs
-                    # Replan to the detour
                         self.replan([self.target], detour_target)
                         self.path_history = []
                         return True
@@ -164,11 +151,8 @@ class IDCMAPF_agent(Agent):
             if pair in pair_counts:
                 repeated_nodes += 1
                 if repeated_nodes > self.repetition_threshold:
-                    # if self.step > 400:
-                    #     print("Ayaa")
                     obstacle_list = []
                     for neighboring_agent in self.neighboring_agents:
-                        #if not (neighboring_agent.position == neighboring_agent.target):
                         obstacle_list.append(neighboring_agent.position)
                     if self.replan(obstacle_list):
                         self.path_history = []
@@ -189,8 +173,6 @@ class IDCMAPF_agent(Agent):
             return False
 
     def get_follower(self):
-        # If follower, set self.follower
-        # else set self.follower = None
         self.get_direction()
 
         # Special out of bounds cases
@@ -238,14 +220,6 @@ class IDCMAPF_agent(Agent):
             verify_follower(follower_tag)
         else:
             self.follower = None
-        
-    def check_consecutive_waits(self):
-        for action in self.action_history:
-            if action == "move":
-                return
-            else:
-                continue
-        self.path_history = []  # Reset the path history if enough consecutive waits occur when at goal position
 
     def final_move(self):
         if (len(self.path) > 0) and (self.target_reached_once == False):
@@ -261,11 +235,8 @@ class IDCMAPF_agent(Agent):
         if (self.action == "wait") and (self.position == self.target) and (len(self.path) == 0):
             self.action_history.pop(-1) # Pop the last element
             self.action_history.insert(0, "wait")
-        #print("Action: ", self.action)
     
     def move_agent_forward(self):
-        # get current position and next position from path
-        # Returns false if the agent has reached the goal
         if len(self.path) == 0:
             self.map.update_agent_on_map(self, self.target, self.target)
             return False
@@ -276,19 +247,13 @@ class IDCMAPF_agent(Agent):
             if (abs(x) > 1) or (abs(y) > 1):
                 print("Telport Detected")
             
-        
         pos_prev = self.position
         pos_next = self.path.pop(0)
-        
-        # check for collision and apply the 7 rules
-        # update the position accordingly
-        # ...
         
         # update agent position on the map
         self.map.update_agent_on_map(self, pos_prev, pos_next)
         self.position = pos_next
         self.idle_blocked = False   # Reset the idle_blocked since we are moving now
-        #self.steps_moved += 1
 
     def find_neighbors(self, depth, position=None):
         # Finds the positions of the neighbors excluding the agents' own position
@@ -304,7 +269,6 @@ class IDCMAPF_agent(Agent):
         return list(neighbors)
     
     def find_neighboring_agents(self):
-        # Find agents (agent objects, NOT positions!!!)
         neighbors_list = self.find_neighbors(2)
         agents = []
         # Only save those neighbors that have an Agent placed on them
@@ -312,13 +276,6 @@ class IDCMAPF_agent(Agent):
             if self.map.map.nodes.get(neighbor, {}).get("agent") is not None:  # Check if the node has an agent placed on it
                 agents.append(self.map.map.nodes.get(neighbor, {}).get("agent"))
         self.neighboring_agents = agents
-
-    def get_priority(self):
-        # Calculate this agents priority
-        for neighbor in self.neighboring_agents:
-            if self.tmp_priority < neighbor.tmp_priority:
-                return False
-        return True
 
     def detect_opposite_conflict(self) -> bool: 
         if len(self.path) == 0:
@@ -331,12 +288,6 @@ class IDCMAPF_agent(Agent):
                 if self.position == opposite_agent.path[0]:
                     return True
         return False
-        
-        
-        # if (len(self.path) >= 1) and len(neighboring_agent.path) >= 1:
-        #     if (self.path[0] == neighboring_agent.position) and (neighboring_agent.path[0] == self.position):
-        #         return True
-        # return False
 
     def get_direction(self):
         if len(self.path) > 0:
@@ -352,8 +303,6 @@ class IDCMAPF_agent(Agent):
                 print("Error: No direction found (This should not happen)")
 
     def detect_intersection_conflict(self) -> bool:
-        # husk skal vi finde ud af hvilken slags intersection konflit det er? 
-        # 4-5?
         type_of_intersection = 0
         if len(self.path) >= 1:
             for neighbor in self.neighboring_agents:
@@ -362,7 +311,6 @@ class IDCMAPF_agent(Agent):
                         type_of_intersection += 1
         if type_of_intersection >= 1:
             return True
-        #print(f"Type of intersection: {type_of_intersection}")
         return False
         
     def is_agent_present_on_node_tag(self, node_tag):
@@ -379,12 +327,6 @@ class IDCMAPF_agent(Agent):
     def give_way(self):
         # Determines the action and updates path to a give way node
         self.get_follower()
-        #print(self.id)
-        #if self.follower is not None:
-            #print(self.follower.id)
-             #if self.follower.give_way_node is not None:
-            #self.follower.give_way()
-        #print("...")
         node_t2 = None
         neighbors = self.find_neighbors(1) # Find neighbors
         if self.detect_opposite_conflict(): # Check if give_way() was called because of an opposite conflict
@@ -392,7 +334,6 @@ class IDCMAPF_agent(Agent):
             neighbors.remove(conflict_agent.position) # Remove that agents position (since we cannot give way to that position)
             if len(conflict_agent.path) >= 2: # Check if the conflicting agent has a path longer than 1
                 node_t2 = conflict_agent.path[1] # Remove its t2 node because if we give way to that in a tight corridoor, we will have another opposite conflict next turn
-                #if node_t2 in neighbors: # QUICK FIX TODO: find out why the path is broken
                 if conflict_agent.position != node_t2:
                     neighbors.remove(node_t2)
         elif self.detect_intersection_conflict():
@@ -437,7 +378,7 @@ class IDCMAPF_agent(Agent):
                 neighboring_agent = self.get_agent_by_tag(neighbor)
                 if len(neighboring_agent.path) >= 2:
                     if neighboring_agent.path[0] == self.position: # Check if the beighboring agent next move is my position
-                        node_t2.append(neighboring_agent.path[1])  # Add it's t+2 step to a list, this is for only taking it as a give a way if no other exists
+                        node_t2.append(neighboring_agent.path[1])  # Add it's t+2 step to a list, this is so it will be taken as a give a way node but ONLY if no other is found
                                                                  
                         
         while len(neighbors) != 0: # Find the give_way_node
@@ -480,7 +421,6 @@ class IDCMAPF_agent(Agent):
     
     def update_give_way_path(self, node):
         if node in self.path:
-            #self.path.insert(0, self.position)
             pass
         else:
             self.path.insert(0, self.position)
@@ -536,19 +476,7 @@ class IDCMAPF_agent(Agent):
             if result is not None:
                 return (result , list_of_agents)
         
-        # What to do when the rules can't find one with priority 
-        # Roll a dice, post-coordination will handle the conflict
-        # if len(list_of_agents) > 1:
-        #     for agent in list_of_agents:
-        #         if agent.position != self.position:
-        #             if agent.tmp_priority > self.tmp_priority:
-        #                 return (False, None)
-        #return (True, None)
         return (False, None)
-        # if random.random() > 1 / len(list_of_agents):
-        #     return True, None
-        # else:
-        #     return (False , None)
 
     def rule_1(self, list_of_agents, critical_node = None):
         # rule1: a robot occupying a critical node is given priority.
@@ -573,11 +501,9 @@ class IDCMAPF_agent(Agent):
         # Alternative description: Robot-1 in conflict with another robot, and that other robot has a free adjacent node, then Robot-1 is given priority
         agents_with_priority = []
 
-        # Remember to check that the node cannot be OUR path[0] node because that is a critical node!!!
         for agent in list_of_agents:
             neighboring_nodes = agent.find_neighbors(1)
             for neighbor_node in neighboring_nodes:
-                #TODO CHECK IS WHY SELF.PATH == []
                 if (neighbor_node == self.path[0]):
                     if self.is_agent_present_on_node_tag(neighbor_node):
                         continue
@@ -621,47 +547,13 @@ class IDCMAPF_agent(Agent):
         max_length = max(len(agent.path) for agent in list_of_agents)
         agents_with_priority = [agent for agent in list_of_agents if len(agent.path) == max_length]
         return agents_with_priority
-
-    # def replan(self, obstacle_tags, intermediate_step = None):
-    #     #print(self.path)
-    #     #start = time.time()
-        
-    #     for node_tag in obstacle_tags:
-    #         for edge in self.map.map.edges(node_tag):
-    #             self.map.map.edges[edge]["weight"] = None
-
-    #     #end = time.time()
-    #     try:
-    #         if intermediate_step is not None:
-    #             path_a = nx.astar_path(self.map.map, self.position, intermediate_step)[1:]
-    #             for node_tag in obstacle_tags:
-    #                 for edge in self.map.map.edges(node_tag):
-    #                     self.map.map.edges[edge]["weight"] = 1
-    #             path_b = nx.astar_path(self.map.map, intermediate_step, self.target)[1:]
-    #             new_path = path_a + path_b 
-    #         else:
-    #             new_path = nx.astar_path(self.map.map, self.position, self.target)[1:]
-    #     except:
-    #         replaned = False
-    #     else:
-    #         self.path = new_path
-    #         replaned = True
-    #     finally:
-    #         for node_tag in obstacle_tags:
-    #             for edge in self.map.map.edges(node_tag):
-    #                 self.map.map.edges[edge]["weight"] = 1
-    #         return replaned
     
     def a_star_heuristic(self, u, v):
         u_x = u[0]
         u_y = u[1]
         v_x = v[0]
         v_y = v[1]
-        return (1/2) ** (((u_x - v_x)**2) + ((u_y - v_y)**2))
-        #return 0 # only return 0 for Dijkstra's algorithm
-        
-            
-            
+        return (1/2) ** (((u_x - v_x)**2) + ((u_y - v_y)**2)) 
     
     def replan(self, obstacle_tags, intermediate_step = None):
         if nx.is_directed(self.map.map):
@@ -673,8 +565,7 @@ class IDCMAPF_agent(Agent):
                     u, v, data = edges.pop(0)
                     self.map.map.remove_edge(u,v)
                     edges_list.append([u ,v, data])
-            
-            #print(edges_list)
+
             
             try:
                 if intermediate_step is not None:
@@ -697,14 +588,9 @@ class IDCMAPF_agent(Agent):
                 for edge_with_data in edges_list:
                     self.map.map.add_edge(edge_with_data[0], edge_with_data[1], **edge_with_data[2]) # ** is from the documentation
 
-                # for edge in edges_list:
-                #     if edge not in self.map.map.edges:
-                #         self.map.map.add_edge(*edge)
                 return replaned                    
 
         else:
-            #print(self.path)
-            #start = time.time()
             edges_list = []
 
             for node_tag in obstacle_tags:
@@ -714,14 +600,6 @@ class IDCMAPF_agent(Agent):
                     self.map.map.remove_edge(*edge)
                     edges_list.append(edge)
 
-                # for edge in self.map.map.edges(node_tag):
-                #     temp_list.append(edge)
-                # for edge in temp_list:
-
-            
-            #print(edges_list) # make sure they are still in here
-
-            #end = time.time()
             try:
                 if intermediate_step is not None:
                     path_a = nx.astar_path(self.map.map, self.position, intermediate_step, heuristic=self.a_star_heuristic)[1:]
@@ -745,6 +623,3 @@ class IDCMAPF_agent(Agent):
                     if edge not in self.map.map.edges:
                         self.map.map.add_edge(*edge)
                 return replaned
-
-            #print(end-start)
-            #print(self.path)

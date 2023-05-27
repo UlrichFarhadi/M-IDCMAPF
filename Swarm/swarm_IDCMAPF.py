@@ -30,10 +30,6 @@ class Swarm_IDCMAPF(Swarm):
         self.rule_order = rule_order
         self.set_rule_order_of_agents()
         self.traffic_id = traffic_id
-    # #bug hunting TODO remove
-    # def print_pos(self):
-    #     print("start: ", self.start)
-    #     print("target: ", self.target)
 
     def set_rule_order_of_agents(self):
         # Generate a list of Agent objects and add them to self.agents
@@ -43,19 +39,13 @@ class Swarm_IDCMAPF(Swarm):
     def move_all_agents(self, step):
         for agent in self.agents:
             agent.move(step)
-            # if random.random() < 0.33:
-            #     agent.action = "wait"
             
         self.post_coordination()
-
-        #self.clean_repetitive_movement()
 
         for agent in self.agents:
             agent.final_move()
         
         self.load_modify_save_trafic()
-
-        #self.clean_up_path()
 
         positions_list = []  # create an empty list
         self.agents_at_goal = 0
@@ -78,33 +68,15 @@ class Swarm_IDCMAPF(Swarm):
 
         #print("Agents still moving: ", self.amount_of_agents - self.agents_at_goal)   
         if self.agents_at_goal == self.amount_of_agents:
-            return True
-        
-    def clean_repetitive_movement(self):
-        for agent in self.agents:
-            if len(agent.path) > 1:
-                while ((agent.action == "wait") and (agent.position == agent.path[1])): # Agent goes back and forth in the same spot needs to decide again next time, so remove it
-                    if len(agent.path) > 1:
-                        agent.path.pop(0)
-                        agent.path.pop(0)
-                        #print("Path cleaned")
-                    if len(agent.path) <= 1:
-                        break
-                    
+            return True              
 
     def post_coordination(self):
         def wait_propogate(agent):
-            if agent.wait_propagated_flag: # Fix inf loop in wait propogate
+            if agent.wait_propagated_flag:
                 return
 
             agent.action = "wait"
             agent.wait_propagated_flag = True
-
-            #if agent.position in agent.path: # if a give way node is given and the agent action is wait
-            #    agent.path = agent.path[2:] # Remove the 2 first element, so the program don't crash  or add unnecessary node to path 
-                # if len(agent.path) > 0:
-                #     if abs(agent.position[0]-agent.path[0][0]) > 1 or abs(agent.position[1]-agent.path[0][1]) > 1:
-                #         print("TELEPORT DETECTED")
 
             neighbors = agent.find_neighbors(1)
             for node in neighbors:
@@ -143,14 +115,6 @@ class Swarm_IDCMAPF(Swarm):
             else:
                 print("NO ACTION???")
                 print(f"action {agent.action}")
-
-    def clean_up_path(self):
-        # TODO: Check if it ends up being used
-        for agent in self.agents:
-            if agent.position in agent.path:
-                idx = agent.path.index(agent.position)
-                agent.path = agent.path[idx+1:] # maybe not plus 1 
-                #print(f"id {agent.id}  position: {agent.position} and path {agent.path}")
 
     def all_agents_reached_target_once(self):
         for agent in self.agents:
