@@ -11,7 +11,7 @@ This below is an example video:
 
 1. Install the required libraries listed in the `requirements.txt` file.
 
-2. In the main file, you can find some examples:
+2. In the `main.py` file, you can find some examples:
 
     a. **Live Simulation Example**: This example runs a live simulation of the map `random-32-32-20` with 100 agents, using the default rule order.
 
