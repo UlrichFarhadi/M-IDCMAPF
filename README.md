@@ -9,7 +9,7 @@ This below is an example video:
 
 ## How to Run
 
-1. Install the required libraries listed in the `requirements.txt` file.
+1. Install the required libraries listed in the `requirements.txt` file. The python version used in this project is `Python 3.11`
 
 2. In the `main.py` file, you can find some examples:
 
@@ -23,6 +23,7 @@ This below is an example video:
         - Best rule order + edge weight encoding
         
       The results from these experiments are then compared using a two-sample t-test, and the p-value for each comparison is printed.
+      The results can be compared to the ones in the paper and will yield the same results.
 
 Feel free to explore and modify the code to suit your needs. If you have any questions or issues, please open an issue in the repository.
 
