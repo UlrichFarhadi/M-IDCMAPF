@@ -172,3 +172,4 @@ if __name__ == '__main__':
     print("P_value for difference in means between default rule order and best rule order: ", p_val_exp1)
     print("P_value for difference in means between best rule order and best rule order & node vector encoding: ", p_val_exp2)
     print("P_value for difference in means between best rule order and best rule order & edge weight encoding: ", p_val_exp3)
+    #---------------------------------------------------------------------------------------------------------------------------------------------#
