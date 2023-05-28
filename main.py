@@ -129,8 +129,8 @@ def exp4(num_agents, map_name, start_position, target_position):
 
     exp_soc, exp_makespan, exp_failrate = run_experiment(num_agents=num_agents, env_name=map_name, start_position=start_position, target_position=target_position, rule_order=[0,4,3,1,5,6,2],  encoding_scheme="edge_weight", encoding=encoding)
     print("Best Rule Order & Edge Weight Encoding: Average Sum of costs: ", sum(exp_soc)/len(exp_soc))
-    print("Best Rule Order & Edge Weight Encoding: ", sum(exp_makespan)/len(exp_makespan))
-    print("Best Rule Order & Edge Weight Encoding: ", exp_failrate / len(start_position))
+    print("Best Rule Order & Edge Weight Encoding: Average Makespan: ", sum(exp_makespan)/len(exp_makespan))
+    print("Best Rule Order & Edge Weight Encoding: Average Failrate: ", exp_failrate / len(start_position))
     return exp_soc, exp_makespan
 
 if __name__ == '__main__':
