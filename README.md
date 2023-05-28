@@ -1,6 +1,6 @@
 # M-IDCMAPF
 
-This repository contains the code for the M-IDCMAPF algorithm.
+This repository contains the code for the M-IDCMAPF algorithm, created by Ulrich Farhadi and Henning Hess (https://github.com/henning998).
 
 Below is an example video:
 
