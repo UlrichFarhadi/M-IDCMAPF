@@ -451,11 +451,15 @@ def universal_fitness_function(chromosome, start_position, target_position, env,
     simulator = Simulator(map, swarm, renderer, display=display, max_timestep=max_timestep, positions_for_agents=[start_position, target_position])
     return simulator.main_loop()
 
-def universal_fitness_function_with_directed_map(chromosome, start_position, target_position, env, amount_of_agents = 10, agent_type=IDCMAPF_agent,  delay=0.0001, fig_size_factor=20, node_size=10, linewidth=0.5, dpi=40 , display=False, max_timestep=1000, rule_order=[0,1,2,3,4,5,6]):
+def universal_fitness_function_with_directed_map(chromosome, start_position, target_position, env, amount_of_agents = 10, agent_type=IDCMAPF_agent,  delay=0.0001, fig_size_factor=20, node_size=10, linewidth=0.5, dpi=40 , display=False, max_timestep=1000, rule_order=[0,1,2,3,4,5,6], edge_weight_encoding = True ):
     map = Map_directed()
     map.generate_map(env)
     #map.update_weight_on_map(chromosome)
-    map.update_weight_on_map_by_directional(list_of_direction=chromosome)
+    if edge_weight_encoding:
+        map.update_weight_on_map(chromosome)
+    else:
+        map.update_weight_on_map_by_directional(chromosome)
+    # map.update_weight_on_map_by_directional(list_of_direction=chromosome)
     swarm = Swarm_IDCMAPF(map, amount_of_agents = amount_of_agents, agent_type=agent_type, rule_order=rule_order)
     renderer = Renderer(map, delay=delay, fig_size_factor=fig_size_factor, node_size=node_size, linewidth=linewidth, dpi=dpi)
     simulator = Simulator(map, swarm, renderer, display=display, max_timestep=max_timestep, positions_for_agents=[start_position, target_position])

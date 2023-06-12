@@ -12,8 +12,8 @@ from dask import compute
 import time
 import csv
 from scipy.interpolate import interp2d
-import math
-import cv2
+from statistics import mean
+
 # Self made imports
 
 # Get the path of the current script
@@ -40,6 +40,8 @@ class GA_Fluid(GA_template):
                 inter: bool = False,
                 inter_anchorpoints_width: int = 8,
                 inter_anchorpoints_height: int = 8,
+                edge_weight_encoding: bool = True,
+                budget: int = 20000,
 
                 amount_of_agents = 10,
                 mutation_rate_swap = 0.05,
@@ -52,10 +54,9 @@ class GA_Fluid(GA_template):
                 dpi=40,
                 display=False,
                 max_timestep=1000,
-                rule_order=[0,1,2,3,4,5,6],
-                save_trainings_animation = False) -> None:
+                rule_order=[0,1,2,3,4,5,6]) -> None:
         super().__init__(num_best_solutions_to_save, population_size, mutation_rate, elitism, max_num_generations)
-        self.fitness_exponent = 3
+        self.fitness_exponent = 9
         self.num_env_repetitions = 5
         self.environment_function = environment_function
         self.rule_order=rule_order
@@ -68,6 +69,8 @@ class GA_Fluid(GA_template):
         self.inter = inter
         self.inter_anchorpoints_width = inter_anchorpoints_width
         self.inter_anchorpoints_height = inter_anchorpoints_height
+        self.edge_weight_encoding = edge_weight_encoding
+        self.config_max_gen = int(budget / (self.population_size * self.num_env_repetitions))
 
         self.mutation_rate_swap = mutation_rate_swap
         self.mutation_rate_point = mutation_rate_point
@@ -80,8 +83,14 @@ class GA_Fluid(GA_template):
         self.dpi = dpi
         self.display = display
         self.max_timestep = max_timestep
-        #self.training_frames=[]
-        self.save_trainings_animation = save_trainings_animation
+
+
+        self.moving_window = []
+        self.moving_window_size = 10
+        self.moving_window_threshold = 5
+        self.last_moving_avg = 9999999999999
+        self.bad_moving_counter = 0
+
     
     # Define the problem-specific fitness function
     def fitness(self, chromosome, start_position, target_position):
@@ -91,8 +100,8 @@ class GA_Fluid(GA_template):
             chromosome = np.array(chromosome).reshape(self.inter_anchorpoints_width,self.inter_anchorpoints_height).tolist()
         for i in range(self.num_env_repetitions):
             cost_tmp, span = delayed(self.environment_function, nout=2)(chromosome,
-                                            start_position,
-                                            target_position,
+                                            start_position[i],
+                                            target_position[i],
                                             self.env,
                                             amount_of_agents = self.amount_of_agents,
                                             agent_type = self.agent_type,
@@ -103,7 +112,8 @@ class GA_Fluid(GA_template):
                                             dpi = self.dpi,
                                             display = self.display,
                                             max_timestep = self.max_timestep,
-                                            rule_order = self.rule_order)
+                                            rule_order = self.rule_order,
+                                            edge_weight_encoding = self.edge_weight_encoding)
             #cost += cost_tmp
             cost.append(cost_tmp)
         cost = sum(compute(*cost)) / self.num_env_repetitions
@@ -153,30 +163,58 @@ class GA_Fluid(GA_template):
 
     def mutation_point(self, chromosome):  
         # Point mutation
-        for i in range(len(chromosome)):
-            mutate = random.random()
-            if mutate < self.mutation_rate_point:
-                # Mutate that element of the cromosome (aka give it a new random value between 0 and 1)
-                mu, sigma = chromosome[i], 0.1666
-                new_weight = np.random.normal(mu, sigma)
-                if new_weight > 1:
-                    new_weight = 1                   
-                elif new_weight < 0:
-                    new_weight = 0
-                chromosome[i] = new_weight
-                #chromosome[i] += random.random()
+        if (self.edge_weight_encoding):
+            for i in range(len(chromosome)):
+                mutate = random.random()
+                if mutate < self.mutation_rate_point:
+                    # Mutate that element of the cromosome (aka give it a new random value between 0 and 1)
+                    mu, sigma = chromosome[i], 0.1666
+                    new_weight = np.random.normal(mu, sigma)
+                    if new_weight > 1:
+                        new_weight = 1                   
+                    elif new_weight < 0:
+                        new_weight = 0
+                    chromosome[i] = new_weight
+                    #chromosome[i] += random.random()
+        else:
+            for i in range(len(chromosome)):
+                mutate = random.random()
+                if mutate < self.mutation_rate_point:
+                    if ((i % 2) == 0):
+                        # Mutate that element of the cromosome (aka give it a new random value between 0 and 1)
+                        mu, sigma = chromosome[i], 0.1666
+                        new_weight = np.random.normal(mu, sigma)
+                        if new_weight > 1:
+                            new_weight -= 1                   
+                        elif new_weight < 0:
+                            new_weight += 1
+                        chromosome[i] = new_weight
+                        #chromosome[i] += random.random()
+
 
     def generate_initial_population(self):
-        initial_nonshuffled_chromosome = []
-        for i in range(len(self.map.free_nodes)):
-            initial_nonshuffled_chromosome.append(random.uniform(0, 1)) # Append Vector Angle
-            initial_nonshuffled_chromosome.append(random.uniform(0, 1)) # Append Vector Magnitude
-        
-        population = []
-        for i in range(self.population_size):
-            chromosome_copy = copy.deepcopy(initial_nonshuffled_chromosome)
-            population.append([chromosome_copy, 0.0]) # Append the scores
-        return population
+        if self.edge_weight_encoding:
+            initial_nonshuffled_chromosome = []
+            for i in range(len(self.map.get_weight_list())):
+                initial_nonshuffled_chromosome.append(0.5)
+            
+            population = []
+            for i in range(self.population_size):
+                chromosome_copy = copy.deepcopy(initial_nonshuffled_chromosome)
+                population.append([chromosome_copy, 0.0]) # Append the scores
+            return population
+        else:
+            initial_nonshuffled_chromosome = []
+            for i in range(len(self.map.free_nodes)):
+                initial_nonshuffled_chromosome.append(random.uniform(0, 1)) # Append Vector Angle
+                initial_nonshuffled_chromosome.append(random.uniform(0, 1)) # Append Vector Magnitude
+            
+            population = []
+            for i in range(self.population_size):
+                chromosome_copy = copy.deepcopy(initial_nonshuffled_chromosome)
+                population.append([chromosome_copy, 0.0]) # Append the scores
+            return population
+
 
         # # Shuffle the chromosome
         # population = []
@@ -225,16 +263,47 @@ class GA_Fluid(GA_template):
 
         return new_population
 
+    def validator(self, num_agents, env_name, fluid, start_pos, target_pos, rule_order=[0,1,2,3,4,5,6] , display=False):
+        def run_one_sim(idx):
+            # Create the map object
+            map = Map_directed()
+            # Import the environment
+            env = "Environments/" + env_name + ".map"
+            map.generate_map(env)
+            map.update_weight_on_map(fluid)
+            # Create the swarm object
+            swarm = Swarm_IDCMAPF(map, amount_of_agents=num_agents, agent_type=IDCMAPF_agent, rule_order=rule_order)
 
-    def run(self):
+            # Create the renderer object
+            renderer = Renderer(map, delay=0.0001, fig_size_factor=6, node_size=350, linewidth=0.5, dpi=400)
+            simulator = Simulator(map, swarm, renderer, display=display, max_timestep=1000, positions_for_agents=[start_pos[idx], target_pos[idx]])
+            cost, makespan = simulator.main_loop()
+            return cost, makespan        
+        
+        list_of_cost = []
+        list_of_makespan = []
+        for idx in range(len(start_pos)):
+            # Create the simulator object
+            cost, span = delayed(run_one_sim, nout=2)(idx)
+            list_of_cost.append(cost)
+            list_of_makespan.append(span)
+
+        res = compute(*list_of_cost, *list_of_makespan)
+        # if save_video:    
+        #     renderer.create_animation("Testvideos/" + env_name + "_" + str(num_agents) + ".mp4", fps=5)
+        return sum(res[:len(start_pos)])/len(start_pos), sum(res[len(start_pos):])/len(start_pos)
+
+
+    def run(self, v_num_agents, v_env_name, v_start_pos, v_target_pos, v_rule_order, csv_filename = "Fluid_chromosome1", start = None, target = None):
         # cluster = LocalCluster()
-        # client = Client(cluster)
+        # #client = Client(cluster)
+        # client = Client("127.0.0.1:8786")
         # print(f"Link to dask dashboard {client.dashboard_link}")
 
         # Write in a terminal. dask scheduler
         # Write in another terminal: dask worker <ip from scheduler (connect worker at.. that ip)>
         # Connect another pc using the same as previous step, the reason we also need a worker on the main pc is so that it is also a worker!
-        #client = Client("10.126.85.122:8786")
+        #client = Client("127.0.0.1:8786")
 
 
         def sort_by_second_element(item):
@@ -245,12 +314,19 @@ class GA_Fluid(GA_template):
         else:
             population = self.generate_initial_population()
 
-        for gen in tqdm(range(self.max_num_generations), desc="Genetic Algorithm Processing...", leave=False):
+        #for gen in tqdm(range(self.max_num_generations), desc="Genetic Algorithm Processing...", leave=False):
+        gen = -1
+        while True:
+            gen += 1
+            #for gen in tqdm(range(self.max_num_generations)):
             #generate_new_start_target_positions()
-            if len(self.start_positions) == 0 and len(self.target_positions) == 0:
-                start_position, target_position = self.generate_new_start_target_positions()
+            if start is None:
+                # if len(self.start_positions) == 0 and len(self.target_positions) == 0:
+                start_position, target_position = self.generate_new_start_target_positions(self.num_env_repetitions)
+                # else:
+                    # start_position, target_position = self.start_positions,self.target_positions
             else:
-                start_position, target_position = self.start_positions,self.target_positions
+                start_position, target_position = start[gen], target[gen]
             # Compute the fitness for each chromosome in the population   
             list_of_cost = []
             #list_of_makespan = []
@@ -272,45 +348,81 @@ class GA_Fluid(GA_template):
             population = self.generate_new_population(population)
 
             if gen%1 == 0:    # Print some update information
-                if self.save_trainings_animation:
-                    self.plot_directions(self.map.map_width, self.map.map_height, self.map.free_nodes, self.list_of_best_solutions[0][0],gen,self.env)
-                    # self.create_animation()
                 #print("\nBest Solution gen: ", gen, " is ", self.list_of_best_solutions[0])
-                print("\nBest Solution gen: ", gen)
+                #print("\nBest Solution gen: ", gen)
                 sum_of_costs = (1000000 / self.list_of_best_solutions[0][1]) ** (1. / self.fitness_exponent)
-                print("Best Sum of Costs: ", sum_of_costs)
-
-            if gen%1 == 0:
-                self.write_to_csv(self.list_of_best_solutions[0][0], sum_of_costs, os.path.basename(self.env) + "_" + str(self.amount_of_agents) + ".csv")
-                # print(self.list_of_best_solutions[0])
                 
+                mean_sum_of_cost = mean([(1000000 / elem[1]) ** (1. / self.fitness_exponent) for elem in self.list_of_best_solutions])
+
+                worst_sum_of_cost = (1000000 / self.list_of_best_solutions[-1][1]) ** (1. / self.fitness_exponent)
+
+                #print("Best Sum of Costs: ", sum_of_costs)
+                self.write_to_csv([sum_of_costs, mean_sum_of_cost, worst_sum_of_cost], csv_filename + ".csv")
+
+            if (gen % (self.config_max_gen - 1)) == 0 and gen != 0:
+                # Validate
+                v_soc , v_span = self.validator(num_agents=v_num_agents, env_name=v_env_name, fluid=self.list_of_best_solutions[0][0], start_pos=v_start_pos, target_pos=v_target_pos, rule_order=v_rule_order)
+                if self.edge_weight_encoding:
+                    folder = "edge_weight"
+                else:
+                    folder = "node_vector" 
+                self.write_to_csv([self.population_size, self.mutation_rate_point, self.num_env_repetitions, v_soc, v_span, self.list_of_best_solutions[0][0]], f"Tuning_data_ga/{folder}/validator_test.csv")
+                return self.list_of_best_solutions[0][0]
+            # if gen%5 == 0:
+            #     pass
+                # print(self.list_of_best_solutions[0])   
             self.best_sumofcosts = 999999999
 
-            if len(self.start_positions) == 0 and len(self.target_positions) == 0:
-                start_position, target_position = self.generate_new_start_target_positions()
-            else:
-                start_position, target_position = self.start_positions,self.target_positions
+            # if len(self.start_positions) == 0 and len(self.target_positions) == 0:
+            #     start_position, target_position = self.generate_new_start_target_positions()
+            # else:
+            #     start_position, target_position = self.start_positions,self.target_positions
+            
+
+            # # Moving Window 
+            # if len(self.moving_window) < self.moving_window_size:
+            #     self.moving_window.append(sum_of_costs)
+            # else:
+            #     self.moving_window.append(sum_of_costs)
+            #     if len(self.moving_window) > self.moving_window_size:
+            #         self.moving_window.pop(0)
+            #     avg = sum(self.moving_window)/self.moving_window_size
+            #     if avg < self.last_moving_avg:
+            #         self.last_moving_avg = avg
+            #         self.bad_moving_counter = 0
+            #     else:
+            #         self.bad_moving_counter += 1
+            #         if self.bad_moving_counter >= self.moving_window_threshold:
+            #             return self.previous_chromosome
+            # self.previous_chromosome = self.list_of_best_solutions[0][0]
+
+                 
             
 
         
         
-    def generate_new_start_target_positions(self):
-        start = []
-        target = []
-        start_positions = copy.deepcopy(self.map.free_nodes)
-        for i in range(self.amount_of_agents):
-            node_tag = random.choice(start_positions)
-            start_positions.remove(node_tag)
-            start.append(node_tag)
+    def generate_new_start_target_positions(self, num_rep):
+        start_pos = []
+        target_pos = []
+        for _ in range(num_rep):
+            start = []
+            target = []
+            start_positions = copy.deepcopy(self.map.free_nodes)
+            for i in range(self.amount_of_agents):
+                node_tag = random.choice(start_positions)
+                start_positions.remove(node_tag)
+                start.append(node_tag)
 
-        target_positions = copy.deepcopy(self.map.free_nodes)
-        for i in range(self.amount_of_agents):
-            node_tag = random.choice(target_positions)
-            target_positions.remove(node_tag)
-            target.append(node_tag)
-        return start, target
+            target_positions = copy.deepcopy(self.map.free_nodes)
+            for i in range(self.amount_of_agents):
+                node_tag = random.choice(target_positions)
+                target_positions.remove(node_tag)
+                target.append(node_tag)
+            start_pos.append(start)
+            target_pos.append(target)
+        return start_pos, target_pos
         
-    def write_to_csv(self, weight_list, sum_of_costs, filename='output.csv', append=True):
+    def write_to_csv(self, info, filename='output.csv', append=True):
         # If append is True, open the CSV file in append mode
         mode = 'a' if append else 'w'
         
@@ -318,103 +430,5 @@ class GA_Fluid(GA_template):
         with open(filename, mode, newline='') as file:
             writer = csv.writer(file)
             
-            # If append is False, write the header row
-            if not append:
-                writer.writerow(['weight_list', 'sum_of_costs'])
-            
-            # Loop through the elements of the two lists
-            #for i in range(len(int(sum_of_costs))):
-                # Get the corresponding elements from the lists
-                #soc = sum_of_costs[i]
-                
-                
-                # Append the experiment list (as a string) to the CSV file
-            writer.writerow([weight_list, sum_of_costs])
 
-
-
-
-    def plot_directions(self, map_width, map_height, coordinates, angles, gen, env):
-        plt.clf()
-        fig = plt.gcf()
-        ax = plt.gca()
-        #fig, ax = plt.subplots()
-
-        # Plot the coordinates
-        for x, y in coordinates:
-            ax.plot(x, y)
-
-        # Add arrows for each angle
-        for i, angle in enumerate(angles):
-            if i % 2 == 0:
-                x, y = coordinates[int(i/2)]
-                x += 0.5
-                y += 0.5
-                scale = 0.5
-                ax.annotate("", xy=(x + scale*math.cos(math.radians(angle*360)), y + scale*math.sin(math.radians(angle*360))), xytext=(x, y),
-                            arrowprops=dict(arrowstyle="->", color='black'), annotation_clip=False)
-
-        plt.xlim(0,map_width)
-        plt.ylim(0,map_height)
-        ax.set_xticks(range(0, map_width+1))
-        ax.set_yticks(range(0, map_height+1))
-        ax.set_aspect('equal')
-        plt.grid(True,'both',"both")
-        plt.title(f" Map: {os.path.splitext(os.path.basename(env))[0]} \n Generation: {gen}")
-        plt.draw()
-        plt.show(block=False)
-        plt.pause(0.0000001)
-
-        plt.savefig("temp_frames/tmp_frame_"+str(len(os.listdir("temp_frames")))+".png", dpi=400)
-        #plt.savefig("tmp_frame.png", dpi=self.dpi)
-        #frame = cv2.imread("tmp_frame.png")
-        #self.training_frames.append(frame)
-
-
-    def create_animation(self, filename='test_animation.mp4', fps=1):
-        if len(os.listdir("temp_frames")) == 0:
-            print("No frames found in temp_frames")
-        else:
-            # Get the height and width of the first image
-            img = cv2.imread("temp_frames/tmp_frame_0.png")
-            height, width, layers = img.shape
-
-            # Create the video writer object
-            fourcc = cv2.VideoWriter_fourcc(*'mp4v')
-            video = cv2.VideoWriter(filename, fourcc, fps, (width,height))
-
-            # Iterate through each image and add it to the video
-            for i in range(len(os.listdir("temp_frames"))):
-                png = cv2.imread("temp_frames/tmp_frame_"+str(i)+".png")
-                video_frame = cv2.cvtColor(png, cv2.COLOR_RGBA2RGB)
-                video.write(video_frame)
-
-            # Release the video writer
-            video.release()
-
-            for i in os.listdir("temp_frames"):
-                os.remove("temp_frames/"+i)
-
-    # def create_animation(self, filename='test_animation.mp4', fps=1):
-    #     # Get the height and width of the first image
-    #     img = self.training_frames[0]
-    #     height, width, layers = img.shape
-
-    #     # Create the video writer object
-    #     fourcc = cv2.VideoWriter_fourcc(*'mp4v')
-    #     video = cv2.VideoWriter(filename, fourcc, fps, (width,height))
-
-    #     # Iterate through each image and add it to the video
-    #     for png in self.training_frames:
-    #         video_frame = cv2.cvtColor(png, cv2.COLOR_RGBA2RGB)
-    #         video.write(video_frame)
-
-    #     # Release the video writer
-    #     video.release()
-
-
-# plot_directions(10, 10, [(1,2),(2,3),(3,4)], [0, 20, 30])
-# plot_directions(10, 10, [(1,2),(2,3),(3,4)], [0, 40, 46])
-# plot_directions(10, 10, [(1,2),(2,3),(3,4)], [0, 50, 270])
-# plot_directions(10, 10, [(1,2),(2,3),(3,4)], [0, 60, 80])
-# plot_directions(10, 10, [(1,2),(2,3),(3,4)], [0, 23, 55])
+            writer.writerow(info)
