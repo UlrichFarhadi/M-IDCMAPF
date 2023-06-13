@@ -74,7 +74,7 @@ def main():
     startpos_test, targetpos_test =  generate_start_and_target_to_list(number_of_experiments = max_runs_test, number_of_agents = num_agents,env="Environments/" + map_name + ".map")
 
     for tune_mutation_rate in [0.05, 0.10, 0.15]:
-        for tune_population_size in [20, 30, 40]:
+        for tune_population_size in [30, 40, 50]:
             for tune_env_repetition in [5, 10, 15, 20]:
                 
                 ga_obj = GA_Fluid(environment_function=universal_fitness_function_with_directed_map,
@@ -101,8 +101,8 @@ def main():
                                     dpi = 40,
                                     display = False,
                                     max_timestep = 1000,
-                                    edge_weight_encoding = True,
-                                    budget=30000)
+                                    edge_weight_encoding = False,
+                                    budget=20000)
                 ga_obj.fitness_exponent = 9
                 ga_obj.num_env_repetitions = tune_env_repetition
                 # Save
