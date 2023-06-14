@@ -1,4 +1,4 @@
-dask==2023.3.1
+dask[complete]
 matplotlib==3.5.3
 networkit==10.1
 networkx==3.0
