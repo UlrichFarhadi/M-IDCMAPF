@@ -270,7 +270,10 @@ class GA_Fluid(GA_template):
             # Import the environment
             env = "Environments/" + env_name + ".map"
             map.generate_map(env)
-            map.update_weight_on_map(fluid)
+            if self.edge_weight_encoding:
+                map.update_weight_on_map(fluid)
+            else:
+                map.update_weight_on_map_by_directional(fluid)
             # Create the swarm object
             swarm = Swarm_IDCMAPF(map, amount_of_agents=num_agents, agent_type=IDCMAPF_agent, rule_order=rule_order)
 

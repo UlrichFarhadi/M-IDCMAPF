@@ -1,7 +1,8 @@
 import csv
 from statistics import mean
 
-filename = "Tuning_data_ga/edge_weight/validator_test.csv"  
+#filename = "Tuning_data_ga/edge_weight/validator_test.csv"  
+filename = "Tuning_data_ga/node_vector/validator_test.csv"
 
 soc_list = []
 span_list = []
