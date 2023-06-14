@@ -54,10 +54,11 @@ class GA_Fluid(GA_template):
                 dpi=40,
                 display=False,
                 max_timestep=1000,
-                rule_order=[0,1,2,3,4,5,6]) -> None:
+                rule_order=[0,1,2,3,4,5,6],
+                num_env_repetitions = 5) -> None:
         super().__init__(num_best_solutions_to_save, population_size, mutation_rate, elitism, max_num_generations)
         self.fitness_exponent = 9
-        self.num_env_repetitions = 5
+        self.num_env_repetitions = num_env_repetitions
         self.environment_function = environment_function
         self.rule_order=rule_order
         self.best_sumofcosts = 999999999

@@ -69,6 +69,7 @@ def main():
     max_gen = 200
     map_name = "random-10-10-20"
     max_runs_test = 1000
+    budget = 20000
     edge_weight = False
     if edge_weight:
         folder = "edge_weight"
@@ -116,9 +117,10 @@ def main():
                                         display = False,
                                         max_timestep = 1000,
                                         edge_weight_encoding = edge_weight,
-                                        budget=20000)
+                                        budget=budget,
+                                        num_env_repetitions=tune_env_repetition)
                     ga_obj.fitness_exponent = 9
-                    ga_obj.num_env_repetitions = tune_env_repetition
+                    #ga_obj.num_env_repetitions = tune_env_repetition
                     # Save
                     chromosome = ga_obj.run(csv_filename=f"Tuning_data_ga/{folder}/{folder_number}/_{tune_population_size}_{tune_mutation_rate}_{tune_env_repetition}_GA", start=None, target=None, v_num_agents=num_agents, v_env_name=map_name, v_start_pos=startpos_test, v_target_pos=targetpos_test, v_rule_order=rule_order)
                     #sum_of_cost , make_span = validator(num_agents=num_agents, env_name=map_name, fluid=chromosome, start_pos=startpos_test, target_pos=targetpos_test, rule_order=rule_order)
