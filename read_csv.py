@@ -66,18 +66,23 @@ for mutation_rate_value in [0.05, 0.10, 0.15]:
     def find_indices(lst, value):
         return [index for index, element in enumerate(lst) if element == value]
 
-    def find_common_value(list1, list2, mutation_list, mutation_rate):
+    def find_common_values(list1, list2, mutation_list, mutation_rate):
+        indices = []
         for value in list1:
             if value in list2:
                 if mutation_list[value] == mutation_rate:
-                    return value
+                    indices.append(value)
+        return indices
 
     for x, i in enumerate(pop):
         p_idx = find_indices(pop_size_list,i)
         for y, r in enumerate(rep):
             r_idx = find_indices(rep_list,r)
-            idx = find_common_value(p_idx,r_idx,mutation_rate,mutation_rate_value )
-            data[x,y] = soc_list[idx]
+            indices = find_common_values(p_idx,r_idx,mutation_rate,mutation_rate_value )
+            soc = []
+            for idx in indices:
+                soc.append(soc_list[idx])
+            data[x,y] = mean(soc)
 
 
     x,y = rep,pop
