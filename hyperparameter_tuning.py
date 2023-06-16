@@ -70,7 +70,7 @@ def main():
     map_name = "random-10-10-20"
     max_runs_test = 1000
     budget = 20000
-    edge_weight = False
+    edge_weight = True
     if edge_weight:
         folder = "edge_weight"
     else:
