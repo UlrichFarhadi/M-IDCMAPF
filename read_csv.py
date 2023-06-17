@@ -82,6 +82,8 @@ for mutation_rate_value in [0.05, 0.10, 0.15]:
             soc = []
             for idx in indices:
                 soc.append(soc_list[idx])
+            if len(soc) != 15:
+                print("ERROR")
             data[x,y] = mean(soc)
 
 
