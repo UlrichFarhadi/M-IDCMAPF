@@ -351,17 +351,30 @@ class GA_Fluid(GA_template):
             self.list_of_best_solutions = sorted(population, key=sort_by_second_element, reverse=True)[:self.num_best_solutions_to_save]
             population = self.generate_new_population(population)
 
-            if gen%1 == 0:    # Print some update information
-                #print("\nBest Solution gen: ", gen, " is ", self.list_of_best_solutions[0])
-                #print("\nBest Solution gen: ", gen)
-                sum_of_costs = (1000000 / self.list_of_best_solutions[0][1]) ** (1. / self.fitness_exponent)
+            # USED FOR OPTIMIZING HYPERPARAMETERS; UNCOMMENT IF TUNE HYPER PARAMETERS
+            #------------------------------------------------------
+            # if gen%1 == 0:    # Print some update information
+            #     #print("\nBest Solution gen: ", gen, " is ", self.list_of_best_solutions[0])
+            #     #print("\nBest Solution gen: ", gen)
+            #     sum_of_costs = (1000000 / self.list_of_best_solutions[0][1]) ** (1. / self.fitness_exponent)
                 
-                mean_sum_of_cost = mean([(1000000 / elem[1]) ** (1. / self.fitness_exponent) for elem in self.list_of_best_solutions])
+            #     mean_sum_of_cost = mean([(1000000 / elem[1]) ** (1. / self.fitness_exponent) for elem in self.list_of_best_solutions])
 
-                worst_sum_of_cost = (1000000 / self.list_of_best_solutions[-1][1]) ** (1. / self.fitness_exponent)
+            #     worst_sum_of_cost = (1000000 / self.list_of_best_solutions[-1][1]) ** (1. / self.fitness_exponent)
 
-                #print("Best Sum of Costs: ", sum_of_costs)
-                self.write_to_csv([sum_of_costs, mean_sum_of_cost, worst_sum_of_cost], csv_filename + ".csv")
+            #     #print("Best Sum of Costs: ", sum_of_costs)
+            #     self.write_to_csv([sum_of_costs, mean_sum_of_cost, worst_sum_of_cost], csv_filename + ".csv")
+
+            # if (gen % (self.config_max_gen - 1)) == 0 and gen != 0:
+            #     # Validate
+            #     v_soc , v_span = self.validator(num_agents=v_num_agents, env_name=v_env_name, fluid=self.list_of_best_solutions[0][0], start_pos=v_start_pos, target_pos=v_target_pos, rule_order=v_rule_order)
+            #     if self.edge_weight_encoding:
+            #         folder = "edge_weight"
+            #     else:
+            #         folder = "node_vector" 
+            #     self.write_to_csv([self.population_size, self.mutation_rate_point, self.num_env_repetitions, v_soc, v_span, self.list_of_best_solutions[0][0]], f"Tuning_data_ga/{folder}/validator_test.csv")
+            #     return self.list_of_best_solutions[0][0]
+            #-------------------------------------------------------
 
             if (gen % (self.config_max_gen - 1)) == 0 and gen != 0:
                 # Validate
@@ -370,7 +383,7 @@ class GA_Fluid(GA_template):
                     folder = "edge_weight"
                 else:
                     folder = "node_vector" 
-                self.write_to_csv([self.population_size, self.mutation_rate_point, self.num_env_repetitions, v_soc, v_span, self.list_of_best_solutions[0][0]], f"Tuning_data_ga/{folder}/validator_test.csv")
+                self.write_to_csv([v_soc, v_span, self.list_of_best_solutions[0][0]], f"Best_chromosomes/Chromosomes/{csv_filename}.csv")
                 return self.list_of_best_solutions[0][0]
             # if gen%5 == 0:
             #     pass
