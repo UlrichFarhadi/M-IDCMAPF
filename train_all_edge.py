@@ -68,8 +68,8 @@ def main():
 
     #startpos_train, targetpos_train =  generate_start_and_target_to_list(number_of_experiments = max_gen, number_of_agents = num_agents,env="Environments/" + map_name + ".map")
     map_name_csv, num_agents_csv, rule_order_csv, encoding_scheme_csv = 0,1,2,3
-    logging_status_filename = "logging_status.csv"
-    temp_file = "temp.csv"
+    logging_status_filename = "Best_chromosomes/logging_status_edge.csv"
+    temp_file = "Best_chromosomes/temp.csv"
 
     max_runs_test = 1000
     budget = 20000
@@ -91,7 +91,7 @@ def main():
                     edge_weight = row[encoding_scheme_csv] == "edge_weight"
                     encoding_scheme_name = row[encoding_scheme_csv]
                     break
-            if max_counter == 24:
+            if max_counter == 12:
                 break
                 
         # Load logging_status.csv
@@ -145,17 +145,19 @@ def main():
         ga_obj.fitness_exponent = 9
         chromosome = ga_obj.run(csv_filename=chromosome_append_filename, start=None, target=None, v_num_agents=num_agents, v_env_name=map_name, v_start_pos=startpos_test, v_target_pos=targetpos_test, v_rule_order=rule_order)
 
-    with open(logging_status_filename, 'r') as input_file, open(temp_file, 'w', newline='') as output_file:
-        csv_reader = csv.reader(input_file)
-        csv_writer = csv.writer(output_file)
+        with open(logging_status_filename, 'r') as input_file, open(temp_file, 'w', newline='') as output_file:
+            csv_reader = csv.reader(input_file)
+            csv_writer = csv.writer(output_file)
+            csv_writer.writerow(next(csv_reader))
 
-        for row in csv_reader:
-            if map_name == row[map_name_csv] and num_agents == int(row[num_agents_csv]) and encoding_scheme_name == [encoding_scheme_csv]:
-                row[-1] = int(row[-1]) + 1 # check if this update row
+            for row in csv_reader:
+                if map_name == row[map_name_csv] and num_agents == int(row[num_agents_csv]) and encoding_scheme_name == row[encoding_scheme_csv]:
+                    #new_row = row
+                    row[-1] = str(int(row[-1]) + 1) # check if this update row
+                    #csv_writer.writerow(row)
+                csv_writer.writerow(row)
 
-            csv_writer.writerow(row)
-
-    shutil.move(temp_file, logging_status_filename)
+        shutil.move(temp_file, logging_status_filename)
 
     
 if __name__ == '__main__':
