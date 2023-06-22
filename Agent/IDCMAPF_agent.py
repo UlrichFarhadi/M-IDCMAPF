@@ -54,6 +54,7 @@ class IDCMAPF_agent(Agent):
             self.rule_list = [self.initial_rule_list[i] for i in rule_order]
         else:
             raise KeyError("Length not the same")
+        self.conflict_id = 0
 
     def change_rule_order(self, rule_order):
         if len(self.rule_list) == len(rule_order):

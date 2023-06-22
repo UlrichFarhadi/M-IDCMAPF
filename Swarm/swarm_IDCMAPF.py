@@ -30,6 +30,10 @@ class Swarm_IDCMAPF(Swarm):
         self.rule_order = rule_order
         self.set_rule_order_of_agents()
         self.traffic_id = traffic_id
+        self.waitcount_trafic_bool = False
+        self.waitcount_trafic = []
+        self.conflictcount_bool = False
+        self.conflictcount = []
 
     def set_rule_order_of_agents(self):
         # Generate a list of Agent objects and add them to self.agents
@@ -37,10 +41,18 @@ class Swarm_IDCMAPF(Swarm):
             agent.change_rule_order(self.rule_order)
 
     def move_all_agents(self, step):
+
+        if self.conflictcount_bool:
+            self.count_number_of_conflicts()
+
+
         for agent in self.agents:
             agent.move(step)
             
         self.post_coordination()
+
+        if self.waitcount_trafic_bool:
+            self.count_number_of_waits()
 
         for agent in self.agents:
             agent.final_move()
@@ -137,3 +149,46 @@ class Swarm_IDCMAPF(Swarm):
             
             
             np.savetxt(filename, matrix)
+    
+    def count_number_of_waits(self):
+        wait_count = 0
+        for agent in self.agents:
+            if agent.position != agent.target and len(agent.path) > 0:
+                if agent.action == "wait":
+                    wait_count += 1
+        self.waitcount_trafic.append(wait_count)
+
+
+    def count_number_of_conflicts(self):
+        def find_agents_in_conflict(agent, conflict_type):
+            agents_in_conflict = []
+            if conflict_type == "opposite":
+                agents_in_conflict.append(agent)
+                agents_in_conflict.append(agent.get_agent_by_tag(agent.path[0]))
+            elif conflict_type == "intersection":
+                neighborhood = agent.find_neighbors(1, position=agent.path[0])
+                for neighbor_tag in neighborhood:
+                    if agent.is_agent_present_on_node_tag(neighbor_tag):
+                        neighbor = agent.get_agent_by_tag(neighbor_tag)
+                        if len(neighbor.path) >= 1:
+                            if neighbor.path[0] == agent.path[0]:
+                                agents_in_conflict.append(neighbor)
+            return agents_in_conflict
+        
+        conflicts = 0
+        for agent in self.agents:
+            if agent.conflict_id == 0:
+                if agent.detect_opposite_conflict():
+                    conflicts +=1
+                    conflict_cluster = find_agents_in_conflict(agent=agent, conflict_type="opposite")
+                    for agent_id in conflict_cluster:
+                        agent_id.conflict_id = conflicts
+                if agent.detect_intersection_conflict():
+                    conflicts +=1
+                    conflict_cluster = find_agents_in_conflict(agent=agent, conflict_type="intersection")
+                    for agent_id in conflict_cluster:
+                        agent_id.conflict_id = conflicts
+        self.conflictcount.append(conflicts)
+        #reset conflict id
+        for agent in self.agents:
+            agent.conflict_id = 0

@@ -117,6 +117,7 @@ class Simulator:
         cost = 0
         for agent in self.swarm.agents:
             cost += agent.steps_moved
+        #print(f"waits: {sum(self.swarm.waitcount_trafic)} conflicts: {sum(self.swarm.conflictcount)}")
         return cost, self.makespan
 
     def numpy_to_list_of_tuple(self, list):
