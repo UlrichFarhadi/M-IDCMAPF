@@ -281,7 +281,7 @@ class GA_Fluid(GA_template):
             # Create the renderer object
             renderer = Renderer(map, delay=0.0001, fig_size_factor=6, node_size=350, linewidth=0.5, dpi=400)
             simulator = Simulator(map, swarm, renderer, display=display, max_timestep=1000, positions_for_agents=[start_pos[idx], target_pos[idx]])
-            cost, makespan = simulator.main_loop()
+            cost, makespan,_ ,_ = simulator.main_loop()
             return cost, makespan        
         
         list_of_cost = []
