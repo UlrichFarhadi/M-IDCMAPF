@@ -63,7 +63,7 @@ def run_one_sim(num_agents, env_name, rule_order=[0,1,2,3,4,5,6], positions_for_
         pos = generate_start_and_target_to_list(number_of_experiments=1, number_of_agents=num_agents, env=env)
         positions_for_agents = [pos[0][0], pos[1][0]] # start/target  exoerments number
     simulator = Simulator(map, swarm, renderer, display=display, max_timestep=1000, positions_for_agents=positions_for_agents)
-    cost, makespan = simulator.main_loop()
+    cost, makespan ,_ ,_ = simulator.main_loop()
 
     if save_video:    
         renderer.create_animation("Videos/" + env_name + "_" + str(num_agents) + ".mp4", fps=5)

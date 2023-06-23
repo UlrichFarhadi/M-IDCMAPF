@@ -55,7 +55,7 @@ def run_experiment(times, rule_order, chromosome, startpos, targetpos, environme
     list_of_cost = []
     list_of_makespan = []
     for i in range(times):
-        cost, makespan = delayed(environment_func, nout=2)(rule_order=rule_order, chromosome=chromosome, start_position=startpos[i], target_position=targetpos[i], env=environment, amount_of_agents=agents_amt, encoding=encoding)
+        cost, makespan, _, _ = delayed(environment_func, nout=4)(rule_order=rule_order, chromosome=chromosome, start_position=startpos[i], target_position=targetpos[i], env=environment, amount_of_agents=agents_amt, encoding=encoding)
         list_of_cost.append(cost)
         list_of_makespan.append(makespan)
     res = compute(*list_of_cost, *list_of_makespan)

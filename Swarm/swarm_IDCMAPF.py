@@ -30,9 +30,9 @@ class Swarm_IDCMAPF(Swarm):
         self.rule_order = rule_order
         self.set_rule_order_of_agents()
         self.traffic_id = traffic_id
-        self.waitcount_trafic_bool = False
+        self.waitcount_trafic_bool = True
         self.waitcount_trafic = []
-        self.conflictcount_bool = False
+        self.conflictcount_bool = True
         self.conflictcount = []
 
     def set_rule_order_of_agents(self):
@@ -176,19 +176,22 @@ class Swarm_IDCMAPF(Swarm):
             return agents_in_conflict
         
         conflicts = 0
+        number_of_robots = 0
         for agent in self.agents:
             if agent.conflict_id == 0:
                 if agent.detect_opposite_conflict():
                     conflicts +=1
                     conflict_cluster = find_agents_in_conflict(agent=agent, conflict_type="opposite")
+                    number_of_robots += len(conflict_cluster)
                     for agent_id in conflict_cluster:
                         agent_id.conflict_id = conflicts
                 if agent.detect_intersection_conflict():
                     conflicts +=1
                     conflict_cluster = find_agents_in_conflict(agent=agent, conflict_type="intersection")
+                    number_of_robots += len(conflict_cluster)
                     for agent_id in conflict_cluster:
                         agent_id.conflict_id = conflicts
-        self.conflictcount.append(conflicts)
+        self.conflictcount.append(number_of_robots)
         #reset conflict id
         for agent in self.agents:
             agent.conflict_id = 0
