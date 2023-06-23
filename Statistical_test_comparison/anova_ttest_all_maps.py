@@ -74,19 +74,72 @@ def read_my_file(filename):
             row[0] = ast.literal_eval(row[0])
             data.append(row)
         return data
+    
+def load_csv_file_with_chromosomes(filename):
+    data = []
+    with open(filename, 'r') as file:
+        csv_reader = csv.reader(file)
+        for row in csv_reader:
+            data.append(row)
+    return data
+
+def find_highest_a_with_list(data):
+    max_a = float('-inf')
+    max_list = None
+    for row in data:
+        a = float(row[0])
+        lst = row[2].strip('[]').split(',')
+        if a > max_a:
+            max_a = a
+            max_list = lst
+    return max_list
 
 def main():
     cluster = LocalCluster()
     client = Client(cluster)
     print(f"Link to dask dashboard {client.dashboard_link}")
 
-    for num_agents in [60]:
+    #map_name,num_agents,rule_order,encoding_scheme,finished_amt
+    map_names_list = []
+    num_agents_list = []
+    rule_orders_list = []
+    encoding_scheme_list = []
+    encoding_scheme_names_list = []
+
+    map_name_csv, num_agents_csv, rule_order_csv, encoding_scheme_csv = 0,1,2,3
+
+    with open("Best_chromosomes/logging_status_edge.csv", 'r') as log_file:
+        csv_reader = csv.reader(log_file)
+        headline = next(csv_reader)
+        for row in csv_reader:
+            map_names_list.append(row[map_name_csv])
+            num_agents_list.append(int(row[num_agents_csv]))
+            rule_orders_list.append(ast.literal_eval(row[rule_order_csv]))
+            encoding_scheme_list.append(row[encoding_scheme_csv] == "edge_weight")
+            encoding_scheme_names_list.append(row[encoding_scheme_csv])
+
+    with open("Best_chromosomes/logging_status_node.csv", 'r') as log_file:
+        csv_reader = csv.reader(log_file)
+        headline = next(csv_reader)
+        for row in csv_reader:
+            map_names_list.append(row[map_name_csv])
+            num_agents_list.append(int(row[num_agents_csv]))
+            rule_orders_list.append(ast.literal_eval(row[rule_order_csv]))
+            encoding_scheme_list.append(row[encoding_scheme_csv] == "edge_weight")
+            encoding_scheme_names_list.append(row[encoding_scheme_csv])
+
+    for test in range(len(map_names_list)):
+
+
         #num_agents = 600
-        num_experiments = 1000
-        env_name_direct = "empty-10-10"
-        env = "Environments/" + env_name_direct + ".map"
-        best_rule_perm = [0, 1, 2, 3, 4, 5, 6]
-        encoding_scheme = "edge weight" # node vector
+        if map_names_list[test] == "random-32-32-20":
+            num_experiments = 250
+        else:
+            num_experiments = 1000
+        # env_name_direct = "empty-10-10"
+        # env = "Environments/" + env_name_direct + ".map"
+        # best_rule_perm = [0, 1, 2, 3, 4, 5, 6]
+        # encoding_scheme = "edge weight" # node vector
         #chromosome = # LOAD FROM Best_chromosomes folder where we store the best chromosomes for node vector and edge weight
 
         startpos = load_position_list_from_nplist("start_and_target_positions_for_experiments/" + env_name_direct + "_" + str(num_agents) + "_agents_start")
