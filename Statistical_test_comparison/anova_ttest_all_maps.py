@@ -37,13 +37,15 @@ from Logger.logger import Logger
 from GA.GA_Rules import GA_Priority_rules
 from generate_start_and_target import generate_start_and_target_to_list, generate_start_and_target_from_scenario, load_position_list_from_nplist
 
-def environment_func(rule_order, chromosome, start_position, target_position, env, amount_of_agents = 10, agent_type=IDCMAPF_agent,  delay=0.0001, fig_size_factor=20, node_size=10, linewidth=0.5, dpi=40 , display=False, max_timestep=1000, encoding):
+def environment_func(rule_order, chromosome, start_position, target_position, env, amount_of_agents = 10, agent_type=IDCMAPF_agent,  delay=0.0001, fig_size_factor=20, node_size=10, linewidth=0.5, dpi=40 , display=False, max_timestep=1000, encoding="edge_weight"):
     # Create the map object
     map = Map_directed()
     map.generate_map(env)
-    if edge_weight_encoding == "edge weight":
+    if len(chromosome) == 0:
+        pass
+    elif encoding == "edge_weight":
         map.update_weight_on_map(chromosome)
-    else:
+    elif encoding == "node_vector":
         map.update_weight_on_map_by_directional(chromosome)
 
     swarm = Swarm_IDCMAPF(map, amount_of_agents = amount_of_agents, agent_type=agent_type, rule_order=rule_order)
@@ -54,17 +56,21 @@ def environment_func(rule_order, chromosome, start_position, target_position, en
 def run_experiment(times, rule_order, chromosome, startpos, targetpos, environment, agents_amt, encoding):
     list_of_cost = []
     list_of_makespan = []
+    list_of_waits = []
+    list_of_conflicts = []
     for i in range(times):
-        cost, makespan, _, _ = delayed(environment_func, nout=4)(rule_order=rule_order, chromosome=chromosome, start_position=startpos[i], target_position=targetpos[i], env=environment, amount_of_agents=agents_amt, encoding=encoding)
+        cost, makespan, waits, conflicts = delayed(environment_func, nout=4)(rule_order=rule_order, chromosome=chromosome, start_position=startpos[i], target_position=targetpos[i], env=environment, amount_of_agents=agents_amt, encoding=encoding)
         list_of_cost.append(cost)
         list_of_makespan.append(makespan)
-    res = compute(*list_of_cost, *list_of_makespan)
+        list_of_waits.append(waits)
+        list_of_conflicts.append(conflicts)
+    res = compute(*list_of_cost, *list_of_makespan, *list_of_waits, *list_of_conflicts)
     failrate = 0
     for span in res[times:]:
         if span == 1000:
             failrate += 1
 
-    return res[:times], res[times:], failrate # returns cost, times
+    return res[:times], res[times:times*2], failrate, res[times*2:times*3], res[times*3:] # returns cost, span, failrate, waits, conflicts
 
 def read_my_file(filename):
     with open(filename, 'r') as csvfile:
@@ -84,15 +90,21 @@ def load_csv_file_with_chromosomes(filename):
     return data
 
 def find_highest_a_with_list(data):
-    max_a = float('-inf')
+    max_a = float('inf')
     max_list = None
     for row in data:
         a = float(row[0])
-        lst = row[2].strip('[]').split(',')
-        if a > max_a:
+        lst = ast.literal_eval(row[2])
+        #lst = row[2].strip('[]').split(',')
+        if a < max_a:
             max_a = a
             max_list = lst
     return max_list
+
+def log_to_csv(filename, data):
+    with open(filename, 'a', newline='') as csvfile:
+        writer = csv.writer(csvfile)
+        writer.writerow(data)
 
 def main():
     cluster = LocalCluster()
@@ -128,45 +140,58 @@ def main():
             encoding_scheme_list.append(row[encoding_scheme_csv] == "edge_weight")
             encoding_scheme_names_list.append(row[encoding_scheme_csv])
 
-    for test in range(len(map_names_list)):
-
-
+    for i in range(len(map_names_list)):
         #num_agents = 600
-        if map_names_list[test] == "random-32-32-20":
+        if map_names_list[i] == "random-32-32-20":
             num_experiments = 250
         else:
             num_experiments = 1000
         # env_name_direct = "empty-10-10"
-        # env = "Environments/" + env_name_direct + ".map"
+        env = "Environments/" + map_names_list[i] + ".map"
         # best_rule_perm = [0, 1, 2, 3, 4, 5, 6]
         # encoding_scheme = "edge weight" # node vector
         #chromosome = # LOAD FROM Best_chromosomes folder where we store the best chromosomes for node vector and edge weight
 
-        startpos = load_position_list_from_nplist("start_and_target_positions_for_experiments/" + env_name_direct + "_" + str(num_agents) + "_agents_start")
-        targetpos = load_position_list_from_nplist("start_and_target_positions_for_experiments/" + env_name_direct + "_" + str(num_agents) + "_agents_target")
-        print("Running First Experiment...")
-        best_cost, best_span, best_failrate = run_experiment(times=num_experiments, rule_order=best_rule_perm, chromosome=chromosome, startpos=startpos, targetpos=targetpos, environment=env, agents_amt=num_agents)
-        print("Running Second Experiment...")
-        default_cost, default_span, default_failrate = run_experiment(times=num_experiments, rule_order=best_rule_perm, chromosome=[], startpos=startpos, targetpos=targetpos, environment=env, agents_amt=num_agents)
+        startpos = load_position_list_from_nplist("Statistical_test_comparison/start_and_target_positions_for_experiments/" + map_names_list[i] + "_" + str(num_agents_list[i]) + "_agents_start")
+        targetpos = load_position_list_from_nplist("Statistical_test_comparison/start_and_target_positions_for_experiments/" + map_names_list[i] + "_" + str(num_agents_list[i]) + "_agents_target")
+        data = load_csv_file_with_chromosomes("Best_chromosomes/Chromosomes/" + map_names_list[i] + "_" + str(num_agents_list[i]) + "_" + encoding_scheme_names_list[i] + ".csv")
+        chromosome = find_highest_a_with_list(data)
+        #print("Running First Experiment...")
+        best_cost, best_span, best_failrate, best_waits, best_conflicts = run_experiment(times=num_experiments, rule_order=rule_orders_list[i], chromosome=chromosome, startpos=startpos, targetpos=targetpos, environment=env, agents_amt=num_agents_list[i], encoding=encoding_scheme_names_list[i])
+        #print("Running Second Experiment...")
+        default_cost, default_span, default_failrate, default_waits, default_conflicts = run_experiment(times=num_experiments, rule_order=rule_orders_list[i], chromosome=[], startpos=startpos, targetpos=targetpos, environment=env, agents_amt=num_agents_list[i], encoding=encoding_scheme_names_list[i])
 
-        print("rule order used: ", best_rule_perm)
-        print("SOC using " + encoding_scheme + " encoding: ", sum(best_cost)/len(best_cost))
-        print("makespan using " + encoding_scheme + " encoding: ", sum(best_span)/len(best_span))
-        print("failrate using " + encoding_scheme + " encoding: ", best_failrate / num_experiments)
-        print("SOC using no encoding: ", sum(default_cost)/len(default_cost))
-        print("makespan using no encoding: ", sum(default_span)/len(default_span))
-        print("failrate using no encoding: ", default_failrate / num_experiments)
+        # print("T-test on cost")
+        # print("0 is best_rule, 1 is default_rule")
+        t_statistic, p_value_SOC = stats.ttest_ind(best_cost, default_cost)
+        t_statistic_waits, p_value_waits = stats.ttest_ind(best_waits, default_waits)
+        t_statistic_conflicts, p_value_conflicts = stats.ttest_ind(best_conflicts, default_conflicts)
+        # print(f"t_statistic {t_statistic} and p_value {p_value}")
 
-        print("T-test on cost")
-        print("0 is best_rule, 1 is default_rule")
-        t_statistic, p_value = stats.ttest_ind(best_cost, default_cost)
-        print(f"t_statistic {t_statistic} and p_value {p_value}")
+        # print("T-test on span")
+        # t_statistic, p_value = stats.ttest_ind(best_span, default_span)
+        # print(f"t_statistic {t_statistic} and p_value {p_value}")
 
-        print("T-test on span")
-        t_statistic, p_value = stats.ttest_ind(best_span, default_span)
-        print(f"t_statistic {t_statistic} and p_value {p_value}")
+        # print("rule order used: ", best_rule_perm)
+        # print("SOC using " + encoding_scheme + " encoding: ", sum(best_cost)/len(best_cost))
+        # print("makespan using " + encoding_scheme + " encoding: ", sum(best_span)/len(best_span))
+        # print("failrate using " + encoding_scheme + " encoding: ", best_failrate / num_experiments)
+        # print("SOC using no encoding: ", sum(default_cost)/len(default_cost))
+        # print("makespan using no encoding: ", sum(default_span)/len(default_span))
+        # print("failrate using no encoding: ", default_failrate / num_experiments)
+        best_cost = sum(best_cost) / len(best_cost)
+        best_span = sum(best_span) / len(best_span)
+        best_failrate = best_failrate / num_experiments
+        best_waits = sum(best_waits) / len(best_waits)
+        best_conflicts = sum(best_conflicts) / len(best_conflicts)
+        default_cost = sum(default_cost) / len(default_cost)
+        default_span = sum(default_span) / len(default_span)
+        default_failrate = default_failrate / num_experiments
+        default_waits = sum(default_waits) / len(default_waits)
+        default_conflicts = sum(default_conflicts) / len(default_conflicts)
 
-    
+        variables_to_log = [map_names_list[i], num_agents_list[i], encoding_scheme_names_list[i], round(p_value_SOC, 4), round(p_value_waits, 4), round(p_value_conflicts, 4), rule_orders_list[i], best_cost, best_span, best_failrate, best_waits, best_conflicts, default_cost, default_span, default_failrate, default_waits, default_conflicts]
+        log_to_csv("Best_chromosomes/" + "results.csv", variables_to_log)
 
 if __name__ == "__main__":
     main()
