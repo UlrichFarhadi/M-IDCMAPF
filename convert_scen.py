@@ -23,5 +23,5 @@ for env in ["random-32-32-20"]:
         target = target*10
         #save list to npy
         #print(len(start))
-        # np.save(f"start_{env}_{num_agents}.npy", start)
-        # np.save(f"target_{env}_{num_agents}.npy", target)
+        np.save(f"Statistical_test_comparison\start_and_target_positions_for_experiments/{env}_{num_agents}_agents_start.npy", start)
+        np.save(f"Statistical_test_comparison\start_and_target_positions_for_experiments/{env}_{num_agents}_agents_target.npy", target)
