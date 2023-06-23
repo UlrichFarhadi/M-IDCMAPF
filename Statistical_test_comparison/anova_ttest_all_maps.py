@@ -163,7 +163,7 @@ def main():
 
         # print("T-test on cost")
         # print("0 is best_rule, 1 is default_rule")
-        t_statistic, p_value_SOC = stats.ttest_ind(best_cost, default_cost)
+        t_statistic_SOC, p_value_SOC = stats.ttest_ind(best_cost, default_cost)
         t_statistic_waits, p_value_waits = stats.ttest_ind(best_waits, default_waits)
         t_statistic_conflicts, p_value_conflicts = stats.ttest_ind(best_conflicts, default_conflicts)
         # print(f"t_statistic {t_statistic} and p_value {p_value}")
