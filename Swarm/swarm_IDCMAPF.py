@@ -30,6 +30,7 @@ class Swarm_IDCMAPF(Swarm):
         self.rule_order = rule_order
         self.set_rule_order_of_agents()
         self.traffic_id = traffic_id
+        self.encoding_scheme = ""
         self.waitcount_trafic_bool = True
         self.waitcount_trafic = []
         self.conflictcount_bool = True
@@ -136,7 +137,7 @@ class Swarm_IDCMAPF(Swarm):
 
     def load_modify_save_trafic(self):
         if self.traffic_id != -1:
-            filename = f"trafic_data/{os.path.splitext(os.path.basename(self.map.current_map_file))[0]}_{self.traffic_id}.txt"
+            filename = f"traffic_data/{self.encoding_scheme}_{os.path.splitext(os.path.basename(self.map.current_map_file))[0]}_{len(self.agents)}_{self.traffic_id}.txt"
             if os.path.isfile(filename):
                 matrix = np.loadtxt(filename)
             else:
