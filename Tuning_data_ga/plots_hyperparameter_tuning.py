@@ -1,16 +1,17 @@
 import csv
 from statistics import mean
 
-filename = "Tuning_data_ga/edge_weight/validator_test.csv"
-encoding = "Edge weight" 
-# filename = "Tuning_data_ga/node_vector/validator_test.csv"
-# encoding = "Node vector"
+# filename = "Tuning_data_ga/edge_weight/validator_test.csv"
+# encoding = "Edge weight" 
+filename = "Tuning_data_ga/node_vector/validator_test.csv"
+encoding = "Node vector"
 
 title_size = 20
 xlabel_size = 15
 ylabel_size = 15
 
-colormap = 'binary'
+#colormap = 'binary'
+colormap = 'GnBu'
 save = True
 
 soc_list = []
