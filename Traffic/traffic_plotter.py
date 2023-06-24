@@ -70,11 +70,12 @@ for endcoding in encoding_scheme:
             fig.colorbar(heatmap)
             # Add a title
             if env == "fluid_test_smallscale":
-                plt.title(f"Passage_{num_agent}_{endcoding}", fontsize=17)
+                plt.title(f"passage_{num_agent}_{endcoding}", fontsize=17)
+                plt.savefig(f"Traffic/plots/passage_{num_agent}_{endcoding}")
             else:
                 plt.title(f"{env}_{num_agent}_{endcoding}", fontsize=17)
 
-            # Show the plot
-            plt.savefig(f"Traffic/plots/{env}_{num_agent}_{endcoding}")
-            # plt.show()
+                # Show the plot
+                plt.savefig(f"Traffic/plots/{env}_{num_agent}_{endcoding}")
+                # plt.show()
 
