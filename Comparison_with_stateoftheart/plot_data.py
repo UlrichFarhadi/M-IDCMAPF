@@ -8,6 +8,7 @@ import csv
 import os
 import sys
 from statistics import mean
+import matplotlib.pyplot as plt
 
 # Self made imports
 
@@ -18,249 +19,194 @@ parent_dir = os.path.abspath(os.path.join(script_dir, '..'))
 sys.path.append(parent_dir)
 
 
+# Define a line style for the plots
+line_style1 = '-'
+line_style2 = ':'
+line_style3 = '--'
+line_style4 = '-.'
 
-def data(file_name,number_of_agent,env):
-    soc_list = []
-    solved_list = []
-    new_soc_list = []
+# Define the marker size
+marker_size = 6
 
-    with open(file_name, "r") as file:
-        next(file)
-        lines = csv.reader(file)
+# Define the marker edge width
+marker_edge_width = 2
 
-        for line in lines:
-            #print(line)
-            map_name,scen_num,num_agents,solver,solved,soc,lb_soc,makespan,lb_makespan,comp_time = line
-            
-            if map_name == env and int(num_agents) == number_of_agent:
-                if solved == "-1":
-                    solved = 0
-                solved_list.append(int(solved))
-                if soc == "-1":
-                    continue
-                soc_list.append(int(soc))
-                #print(line)
-                if soc == "-1" or int(solved) == 0:
-                    continue
-                new_soc_list.append(int(soc))
+title_size = 15
+legend_size = 12
+label_size = 13
 
+# Colors
+color_PIBT = "darkgoldenrod"
+color_PIBT_PLUS = "green"
+color_EECBS = "blue"
+color_CBS = "darkslategray"
+color_DCMAPF = "purple"
+color_IDCMAPF = "brown"
+color_M_IDCMAPF = "red"
 
-    print(f"method: {solver} soc: {mean(soc_list)} and success rate: {mean(solved_list)}")
-    print(f"method: {solver} new soc: {mean(new_soc_list)}")
+# Create some sample data
 
-pibt = "Comparison_with_stateoftheart/PIBT.csv"
-pibtplus = "Comparison_with_stateoftheart/PIBT_PLUS.csv"
-eecbs = "Comparison_with_stateoftheart/EECBS.csv"
-cbs = "Comparison_with_stateoftheart/CBS.csv"
-dcmapf = "Comparison_with_stateoftheart/DCMAPF.csv"
-idcmapf = "Comparison_with_stateoftheart/IDCMAPF.csv"
+# random-32-32-20
+random_32_32_20_PIBT_SOC = [1310.3478260869565, 2975.3571428571427, 5189.818181818182, 7747.5]
+random_32_32_20_PIBT_PLUS_SOC = [1322.64, 3037.28, 5257.88, 8062.24]
+random_32_32_20_EECBS_SOC = [1156.24, 2458.0, 3970.25, 5486.5]
+random_32_32_20_CBS_SOC = [1140.6666666666667]
+random_32_32_20_DCMAPF_SOC = [1302.64, 3170.84, 6481.44, 12417.2]
+random_32_32_20_IDCMAPF_SOC = [1306.8, 3117.56, 5995.52, 10538.28]
+random_32_32_20_M_IDCMAPF_SOC = []
 
-number_of_agent = 200
-env = "random-32-32-20.map"
+random_32_32_20_PIBT_SR = [0.92, 0.56, 0.44, 0.16]
+random_32_32_20_PIBT_PLUS_SR = [1.0, 1.0, 1.0, 1.0]
+random_32_32_20_EECBS_SR = [1.0, 1.0, 0.96, 0.08]
+random_32_32_20_CBS_SR = [0.84]
+random_32_32_20_DCMAPF_SR = [1.0, 1.0, 1.0, 1.0]
+random_32_32_20_IDCMAPF_SR = [1.0, 1.0, 1.0, 1.0]
+random_32_32_20_M_IDCMAPF_SR = []
+random_32_32_20_density = [50,100,150,200]
 
-for number_of_agent in [50,100,150,200]:
-    data(pibt,number_of_agent=number_of_agent,env=env)
-    data(pibtplus,number_of_agent=number_of_agent,env=env)
-#data(eecbs,number_of_agent=number_of_agent,env=env)
+# empty-48-48
+empty_48_48_PIBT_SOC = [1681.36, 3548.36, 5606.76, 7795.68, 10080.84, 12567.28, 15231.6, 17874.28]
+empty_48_48_PIBT_PLUS_SOC = [1681.36, 3548.36, 5606.6, 7796.16, 10081.28, 12567.36, 15231.6, 17874.28]
+empty_48_48_EECBS_SOC = [1584.64, 3153.84, 4765.2, 6371.96, 8001.68, 9709.16, 11452.4, 13222.12]
+empty_48_48_CBS_SOC = [1583.64, 3143.375, 4724.272727272727, 6195.4]
+empty_48_48_DCMAPF_SOC = [1660.88, 3348.04, 5140.92, 7002.04, 9006.16, 11279.92, 13980.84, 17283.72]
+empty_48_48_IDCMAPF_SOC = [1660.36, 3350.08, 5138.96, 6996.16, 8944.52, 11151.6, 13572.88, 16516.12]
+empty_48_48_M_IDCMAPF_SOC = []
 
+empty_48_48_PIBT_SR = [1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0]
+empty_48_48_PIBT_PLUS_SR = [1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0]
+empty_48_48_EECBS_SR = [1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0]
+empty_48_48_CBS_SR = [1.0, 0.96, 0.88, 0.2]
+empty_48_48_DCMAPF_SR = [1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0]
+empty_48_48_IDCMAPF_SR = [1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0]
+empty_48_48_M_IDCMAPF_SR = []
+empty_48_48_density = [50,100,150,200,250,300,350,400]
 
-# import matplotlib.pyplot as plt
+# random-64-64-20
+random_64_64_20_PIBT_SOC = [2384.88, 5043.96, 7873.64, 10905.1, 14264.125, 17744.14285714286, 21386.75, 25773.428571428572]
+random_64_64_20_PIBT_PLUS_SOC = [2384.88, 5043.96, 7873.84, 10916.56, 14241.88, 17683.16, 21293.96, 25233.88]
+random_64_64_20_EECBS_SOC = [2251.32, 4532.12, 6825.08, 9194.8, 11662.8, 14189.4, 16843.76, 19714.08]
+random_64_64_20_CBS_SOC = [2246.04, 4469.733333333334]
+random_64_64_20_DCMAPF_SOC = [2360.56, 4866.28, 7560.72, 10611.04, 14413.16, 19046.52, 25163.083333333332, 32186.916666666668]
+random_64_64_20_IDCMAPF_SOC = [2358.84, 4870.72, 7515.48, 10519.76, 13880.24, 17754.68, 22583.84, 28168.24]
+random_64_64_20_M_IDCMAPF_SOC = []
 
-# # Define a line style for the plots
-# line_style1 = '-'
-# line_style2 = ':'
-# line_style3 = '--'
-# line_style4 = '-.'
+random_64_64_20_PIBT_SR = [1.0, 1.0, 1.0, 0.8, 0.64, 0.56, 0.48, 0.28]
+random_64_64_20_PIBT_PLUS_SR = [1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0]
+random_64_64_20_EECBS_SR = [1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0]
+random_64_64_20_CBS_SR = [1.0, 0.6]
+random_64_64_20_DCMAPF_SR = [1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 0.96, 0.96]
+random_64_64_20_IDCMAPF_SR = [1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0]
+random_64_64_20_M_IDCMAPF_SR = []
+random_64_64_20_density = [50,100,150,200,250,300,350,400]
 
-# # Define the marker size
-# marker_size = 6
+# ost003d
+ost003d_PIBT_SOC = [7933.68, 16167.88, 24781.0, 33866.12, 43425.68, 53281.8]
+ost003d_PIBT_PLUS_SOC = [7933.68, 16167.88, 24781.0, 33866.12, 43426.08, 53281.8]
+ost003d_EECBS_SOC = []
+ost003d_CBS_SOC = [7675.291666666667, 14469.6]
+ost003d_DCMAPF_SOC = []
+ost003d_IDCMAPF_SOC = [8080.52, 16831.24, 27041.8, 39483.68, 55416.28, 93879.32]
+ost003d_M_IDCMAPF_SOC = []
 
-# # Define the marker edge width
-# marker_edge_width = 2
-
-# title_size = 15
-# legend_size = 12
-# label_size = 13
-
-# # Create some sample data
-# random_32_32_20_pibt = [1319,3587,6861,12100]
-# random_32_32_20_pibt_plus = [1323,3037,5258,8062]
-# random_32_32_20_eecbs = [1156,2458,3811,5487]
-# random_32_32_20_M_IDCMAPF = [3166,5697,9566]
-
-# random_32_32_20_e_pibt = [0.92,0.56,0.44,0.16]
-# random_32_32_20_e_pibt_plus = [1,1,1,1]
-# random_32_32_20_e_eecbs = [1,1,1,0.08]
-# random_32_32_20_e_M_IDCMAPF = [1-0.0, 1-0.004, 1-0.0]
-# r_1_other = [50,100,150,200]
-# r_1_our = [100,150,200]
-
-
-# empty_48_48_pibt = [1681,3548,5607,7796,10081,12567,15232,17874]
-# empty_48_48_pibt_plus = [1681,3548,5607,7796,10081,12567,15232,17874]
-# empty_48_48_eecbs = [1585,3154,4765,6372,8002,9709,11452,13222]
-# empty_48_48_M_IDCMAPF = [6856,16083]
-
-# empty_48_48_e_pibt = [1,1,1,1,1,1,1,1]
-# empty_48_48_e_pibt_plus = [1,1,1,1,1,1,1,1]
-# empty_48_48_e_eecbs = [1,1,1,1,1,1,1,1]
-# empty_48_48_e_M_IDCMAPF = [1-0, 1-0]
-# r_2_other = [50,100,150,200,250,300,350,400]
-# r_2_our = [200,400]
-
-# random_64_64_20_pibt = [2385,5044,7874,11123,14640,18357,21945,26091]
-# random_64_64_20_pibt_plus = [2385,5044,7874,10917,14241,17683,21294,25234]
-# random_64_64_20_eecbs = [2251,4532,6825,9195,11663,14189,16844,19714]
-# random_64_64_20_M_IDCMAPF = [10482,17679,27858]
-
-# random_64_64_20_e_pibt = [1,1,1,0.8,0.64,0.56,0.48,0.08]
-# random_64_64_20_e_pibt_plus = [1,1,1,1,1,1,1,1]
-# random_64_64_20_e_eecbs = [1,1,1,1,1,1,1,1]
-# random_64_64_20_e_M_IDCMAPF = [1-0, 1-0.008, 1-0.04]
-# r_3_other = [50,100,150,200,250,300,350,400]
-# r_3_our = [200,300,400]
-
-# ost003d_pibt = [7934,16168,24781,33866,43426,53282]
-# ost003d_pibt_plus = [7934,16168,24781,33866,43426,53282]
-# ost003d_eecbs = []
-# ost003d_M_IDCMAPF = [16351,34420,61843]
-
-# ost003d_e_pibt = [1,1,1,1,1,1]
-# ost003d_e_pibt_plus = [1,1,1,1,1,1]
-# ost003d_e_eecbs = []
-# ost003d_e_M_IDCMAPF = [1-0, 1-0, 1-0.044]
-# r_4_other = [50,100,150,200,250,300]
-# r_4_our = [100,200,300]
+ost003d_PIBT_SR = [1.0, 1.0, 1.0, 1.0, 1.0, 1.0]
+ost003d_PIBT_PLUS_SR = [1.0, 1.0, 1.0, 1.0, 1.0, 1.0]
+ost003d_EECBS_SR = []
+ost003d_CBS_SR = [0.96, 0.2]
+ost003d_DCMAPF_SR = []
+ost003d_IDCMAPF_SR = [1.0, 1.0, 1.0, 1.0, 1.0, 1.0]
+ost003d_M_IDCMAPF_SR = []
+ost003d_density = [50,100,150,200,250,300]
 
 
+PIBT_SOC = [random_32_32_20_PIBT_SOC, empty_48_48_PIBT_SOC, random_64_64_20_PIBT_SOC, ost003d_PIBT_SOC]
+PIBT_PLUS_SOC = [random_32_32_20_PIBT_PLUS_SOC, empty_48_48_PIBT_PLUS_SOC, random_64_64_20_PIBT_PLUS_SOC, ost003d_PIBT_PLUS_SOC]
+EECBS_SOC = [random_32_32_20_EECBS_SOC, empty_48_48_EECBS_SOC, random_64_64_20_EECBS_SOC, ost003d_EECBS_SOC]
+CBS_SOC = [random_32_32_20_CBS_SOC, empty_48_48_CBS_SOC, random_64_64_20_CBS_SOC, ost003d_CBS_SOC]
+DCMAPF_SOC = [random_32_32_20_DCMAPF_SOC, empty_48_48_DCMAPF_SOC, random_64_64_20_DCMAPF_SOC, ost003d_DCMAPF_SOC]
+IDCMAPF_SOC = [random_32_32_20_IDCMAPF_SOC, empty_48_48_IDCMAPF_SOC, random_64_64_20_IDCMAPF_SOC, ost003d_IDCMAPF_SOC]
+M_IDCMAPF_SOC = [random_32_32_20_M_IDCMAPF_SOC, empty_48_48_M_IDCMAPF_SOC, random_64_64_20_M_IDCMAPF_SOC, ost003d_M_IDCMAPF_SOC]
+
+PIBT_SR = [random_32_32_20_PIBT_SR, empty_48_48_PIBT_SR, random_64_64_20_PIBT_SR, ost003d_PIBT_SR]
+PIBT_PLUS_SR = [random_32_32_20_PIBT_PLUS_SR, empty_48_48_PIBT_PLUS_SR, random_64_64_20_PIBT_PLUS_SR, ost003d_PIBT_PLUS_SR]
+EECBS_SR = [random_32_32_20_EECBS_SR, empty_48_48_EECBS_SR, random_64_64_20_EECBS_SR, ost003d_EECBS_SR]
+CBS_SR = [random_32_32_20_CBS_SR, empty_48_48_CBS_SR, random_64_64_20_CBS_SR, ost003d_CBS_SR]
+DCMAPF_SR = [random_32_32_20_DCMAPF_SR, empty_48_48_DCMAPF_SR, random_64_64_20_DCMAPF_SR, ost003d_DCMAPF_SR]
+IDCMAPF_SR = [random_32_32_20_IDCMAPF_SR, empty_48_48_IDCMAPF_SR, random_64_64_20_IDCMAPF_SR, ost003d_IDCMAPF_SR]
+M_IDCMAPF_SR = [random_32_32_20_M_IDCMAPF_SR, empty_48_48_M_IDCMAPF_SR, random_64_64_20_M_IDCMAPF_SR, ost003d_M_IDCMAPF_SR]
+
+densities = [random_32_32_20_density, empty_48_48_density, random_64_64_20_density, ost003d_density]
 
 
-# y_bottom = 0.0
-# y_top = 1.01
-
-# maker1 = "o"
-# maker2 = "o"
-# maker3 = "D"
-# maker4 = "D"
-
-# markerfacecolor1 = 'w'
-# markerfacecolor2 = 'w'
-# markerfacecolor3 = None
-# markerfacecolor4 = None
-
-# # Create the first plot
-# plt.plot(r_1_other, random_32_32_20_pibt, marker=maker1, linestyle=line_style1, linewidth=2, markersize=marker_size, markeredgewidth=marker_edge_width, label='PIBT', color="orange",markerfacecolor=markerfacecolor1)
-# plt.plot(r_1_other, random_32_32_20_pibt_plus, marker=maker2, linestyle=line_style2, linewidth=2, markersize=marker_size, markeredgewidth=marker_edge_width, label='PIBT+', color="green",markerfacecolor=markerfacecolor2)
-# plt.plot(r_1_other, random_32_32_20_eecbs, marker=maker3, linestyle=line_style3, linewidth=2, markersize=marker_size, markeredgewidth=marker_edge_width, label='EECBS', color="blue",markerfacecolor=markerfacecolor3)
-# plt.plot(r_1_our, random_32_32_20_M_IDCMAPF, marker=maker4, linestyle=line_style4, linewidth=2, markersize=marker_size, markeredgewidth=marker_edge_width, label='M_IDCMAPF', color="red",markerfacecolor=markerfacecolor4)
 
 
-# plt.title('Map: random-32-32-20', fontsize=title_size)
-# plt.xlabel('Number of robots', fontsize=label_size)
-# plt.ylabel('Sum of costs', fontsize=label_size)
-# plt.xticks(r_1_other[::])
-# #plt.ylim()
-# plt.legend(fontsize=legend_size)
-# plt.show()
+y_bottom = 0.0
+y_top = 1.01
 
-# plt.plot(r_1_other, random_32_32_20_e_pibt, marker=maker1, linestyle=line_style1, linewidth=2, markersize=marker_size, markeredgewidth=marker_edge_width, label='PIBT', color="orange",markerfacecolor=markerfacecolor1)
-# plt.plot(r_1_other, random_32_32_20_e_pibt_plus, marker=maker2, linestyle=line_style2, linewidth=2, markersize=marker_size, markeredgewidth=marker_edge_width, label='PIBT+', color="green",markerfacecolor=markerfacecolor2)
-# plt.plot(r_1_other, random_32_32_20_e_eecbs, marker=maker3, linestyle=line_style3, linewidth=2, markersize=marker_size, markeredgewidth=marker_edge_width, label='EECBS', color="blue",markerfacecolor=markerfacecolor3)
-# plt.plot(r_1_our, random_32_32_20_e_M_IDCMAPF, marker=maker4, linestyle=line_style4, linewidth=2, markersize=marker_size, markeredgewidth=marker_edge_width, label='M_IDCMAPF', color="red",markerfacecolor=markerfacecolor4)
+maker1 = "o"
+maker2 = "o"
+maker3 = "D"
+maker4 = "D"
+maker5 = "^"
+maker6 = "h"
+maker7 = "h"
 
+markerfacecolor1 = 'w'
+markerfacecolor2 = 'w'
+markerfacecolor3 = None
+markerfacecolor4 = None
 
-# plt.title('Map: random-32-32-20', fontsize=title_size)
-# plt.xlabel('Number of robots', fontsize=label_size)
-# plt.ylabel('Success rate', fontsize=label_size)
-# plt.xticks(r_1_other[::])
-# plt.ylim((y_bottom, y_top))
-# plt.legend(fontsize=legend_size)
-# plt.show()
+map_names = ["random-32-32-20", "empty-48-48", "random-64-64-20", "ost003d"]
 
-# # # Create the second plot
-# plt.plot(r_2_other, empty_48_48_pibt, marker=maker1, linestyle=line_style1, linewidth=2, markersize=marker_size, markeredgewidth=marker_edge_width, label='PIBT', color="orange",markerfacecolor=markerfacecolor1)
-# plt.plot(r_2_other, empty_48_48_pibt_plus, marker=maker2, linestyle=line_style2, linewidth=2, markersize=marker_size, markeredgewidth=marker_edge_width, label='PIBT+', color="green",markerfacecolor=markerfacecolor2)
-# plt.plot(r_2_other, empty_48_48_eecbs, marker=maker3, linestyle=line_style3, linewidth=2, markersize=marker_size, markeredgewidth=marker_edge_width, label='EECBS', color="blue",markerfacecolor=markerfacecolor3)
-# plt.plot(r_2_our, empty_48_48_M_IDCMAPF, marker=maker4, linestyle=line_style4, linewidth=2, markersize=marker_size, markeredgewidth=marker_edge_width, label='M_IDCMAPF', color="red",markerfacecolor=markerfacecolor4)
-
-
-# plt.title('Map: empty_48_48', fontsize=title_size)
-# plt.xlabel('Number of robots', fontsize=label_size)
-# plt.ylabel('Sum of costs', fontsize=label_size)
-# plt.xticks(r_2_other[::])
-# #plt.ylim()
-# plt.legend(fontsize=legend_size)
-# plt.show()
-
-# plt.plot(r_2_other, empty_48_48_e_pibt, marker=maker1, linestyle=line_style1, linewidth=2, markersize=marker_size, markeredgewidth=marker_edge_width, label='PIBT', color="orange",markerfacecolor=markerfacecolor1)
-# plt.plot(r_2_other, empty_48_48_e_pibt_plus, marker=maker2, linestyle=line_style2, linewidth=2, markersize=marker_size, markeredgewidth=marker_edge_width, label='PIBT+', color="green",markerfacecolor=markerfacecolor2)
-# plt.plot(r_2_other, empty_48_48_e_eecbs, marker=maker3, linestyle=line_style3, linewidth=2, markersize=marker_size, markeredgewidth=marker_edge_width, label='EECBS', color="blue",markerfacecolor=markerfacecolor3)
-# plt.plot(r_2_our, empty_48_48_e_M_IDCMAPF, marker=maker4, linestyle=line_style4, linewidth=2, markersize=marker_size, markeredgewidth=marker_edge_width, label='M_IDCMAPF', color="red",markerfacecolor=markerfacecolor4)
+for i in range(len(map_names)):
+    if len(PIBT_SOC[i]) != 0:
+        plt.plot(densities[i][:len(PIBT_SOC[i])], PIBT_SOC[i], marker=maker1, linestyle=line_style1, linewidth=2, markersize=marker_size, markeredgewidth=marker_edge_width, label='PIBT', color=color_PIBT,markerfacecolor=markerfacecolor3)
+    if len(PIBT_PLUS_SOC[i]) != 0:
+        plt.plot(densities[i][:len(PIBT_PLUS_SOC[i])], PIBT_PLUS_SOC[i], marker=maker2, linestyle=line_style2, linewidth=2, markersize=marker_size, markeredgewidth=marker_edge_width, label='PIBT+', color=color_PIBT_PLUS,markerfacecolor=markerfacecolor2)
+    if len(EECBS_SOC[i]) != 0:
+        plt.plot(densities[i][:len(EECBS_SOC[i])], EECBS_SOC[i], marker=maker3, linestyle=line_style3, linewidth=2, markersize=marker_size, markeredgewidth=marker_edge_width, label='EECBS', color=color_EECBS,markerfacecolor=markerfacecolor2)
+    if len(CBS_SOC[i]) != 0:
+        plt.plot(densities[i][:len(CBS_SOC[i])], CBS_SOC[i], marker=maker4, linestyle=line_style4, linewidth=2, markersize=marker_size, markeredgewidth=marker_edge_width, label='CBS', color=color_CBS,markerfacecolor=markerfacecolor4)
+    if len(DCMAPF_SOC[i]) != 0:
+        plt.plot(densities[i][:len(DCMAPF_SOC[i])], DCMAPF_SOC[i], marker=maker5, linestyle=line_style3, linewidth=2, markersize=marker_size, markeredgewidth=marker_edge_width, label='DCMAPF', color=color_DCMAPF,markerfacecolor=markerfacecolor3)
+    if len(IDCMAPF_SOC[i]) != 0:
+        plt.plot(densities[i][:len(IDCMAPF_SOC[i])], IDCMAPF_SOC[i], marker=maker6, linestyle=line_style4, linewidth=2, markersize=marker_size, markeredgewidth=marker_edge_width, label='IDCMAPF', color=color_IDCMAPF,markerfacecolor=markerfacecolor2)
+    if len(M_IDCMAPF_SOC[i]) != 0:
+        plt.plot(densities[i][:len(M_IDCMAPF_SOC[i])], M_IDCMAPF_SOC[i], marker=maker7, linestyle=line_style4, linewidth=2, markersize=marker_size, markeredgewidth=marker_edge_width, label='M_IDCMAPF', color=color_M_IDCMAPF,markerfacecolor=markerfacecolor3)
 
 
-# plt.title('Map: empty_48_48', fontsize=title_size)
-# plt.xlabel('Number of robots', fontsize=label_size)
-# plt.ylabel('Success rate', fontsize=label_size)
-# plt.xticks(r_2_other[::])
-# plt.ylim((y_bottom, y_top))
-# plt.legend(fontsize=legend_size)
-# plt.show()
+    plt.title('Map: ' + map_names[i], fontsize=title_size)
+    plt.xlabel('Number of robots', fontsize=label_size)
+    plt.ylabel('Sum of costs', fontsize=label_size)
+    plt.xticks(densities[i][::])
+    #plt.ylim()
+    plt.legend(fontsize=legend_size)
+    plt.savefig(map_names[i] + "_SOC" + ".png")
+    plt.show()
 
-# # # Create the 3 plot
-# plt.plot(r_3_other, random_64_64_20_pibt, marker=maker1, linestyle=line_style1, linewidth=2, markersize=marker_size, markeredgewidth=marker_edge_width, label='PIBT', color="orange",markerfacecolor=markerfacecolor1)
-# plt.plot(r_3_other, random_64_64_20_pibt_plus, marker=maker2, linestyle=line_style2, linewidth=2, markersize=marker_size, markeredgewidth=marker_edge_width, label='PIBT+', color="green",markerfacecolor=markerfacecolor2)
-# plt.plot(r_3_other, random_64_64_20_eecbs, marker=maker3, linestyle=line_style3, linewidth=2, markersize=marker_size, markeredgewidth=marker_edge_width, label='EECBS', color="blue",markerfacecolor=markerfacecolor3)
-# plt.plot(r_3_our, random_64_64_20_M_IDCMAPF, marker=maker4, linestyle=line_style4, linewidth=2, markersize=marker_size, markeredgewidth=marker_edge_width, label='M_IDCMAPF', color="red",markerfacecolor=markerfacecolor4)
-
-
-# plt.title('Map: random_64_64_20', fontsize=title_size)
-# plt.xlabel('Number of robots', fontsize=label_size)
-# plt.ylabel('Sum of costs', fontsize=label_size)
-# plt.xticks(r_3_other[::])
-# #plt.ylim()
-# plt.legend(fontsize=legend_size)
-# plt.show()
-
-# plt.plot(r_3_other, random_64_64_20_e_pibt, marker=maker1, linestyle=line_style1, linewidth=2, markersize=marker_size, markeredgewidth=marker_edge_width, label='PIBT', color="orange",markerfacecolor=markerfacecolor1)
-# plt.plot(r_3_other, random_64_64_20_e_pibt_plus, marker=maker2, linestyle=line_style2, linewidth=2, markersize=marker_size, markeredgewidth=marker_edge_width, label='PIBT+', color="green",markerfacecolor=markerfacecolor2)
-# plt.plot(r_3_other, random_64_64_20_e_eecbs, marker=maker3, linestyle=line_style3, linewidth=2, markersize=marker_size, markeredgewidth=marker_edge_width, label='EECBS', color="blue",markerfacecolor=markerfacecolor3)
-# plt.plot(r_3_our, random_64_64_20_e_M_IDCMAPF, marker=maker4, linestyle=line_style4, linewidth=2, markersize=marker_size, markeredgewidth=marker_edge_width, label='M_IDCMAPF', color="red",markerfacecolor=markerfacecolor4)
+    if len(PIBT_SR[i]) != 0:
+        plt.plot(densities[i][:len(PIBT_SR[i])], PIBT_SR[i], marker=maker1, linestyle=line_style1, linewidth=2, markersize=marker_size, markeredgewidth=marker_edge_width, label='PIBT', color=color_PIBT,markerfacecolor=markerfacecolor3)
+    if len(PIBT_PLUS_SR[i]) != 0:
+        plt.plot(densities[i][:len(PIBT_PLUS_SR[i])], PIBT_PLUS_SR[i], marker=maker2, linestyle=line_style2, linewidth=2, markersize=marker_size, markeredgewidth=marker_edge_width, label='PIBT+', color=color_PIBT_PLUS,markerfacecolor=markerfacecolor2)
+    if len(EECBS_SR[i]) != 0:
+        plt.plot(densities[i][:len(EECBS_SR[i])], EECBS_SR[i], marker=maker3, linestyle=line_style3, linewidth=2, markersize=marker_size, markeredgewidth=marker_edge_width, label='EECBS', color=color_EECBS,markerfacecolor=markerfacecolor2)
+    if len(CBS_SR[i]) != 0:
+        plt.plot(densities[i][:len(CBS_SR[i])], CBS_SR[i], marker=maker4, linestyle=line_style4, linewidth=2, markersize=marker_size, markeredgewidth=marker_edge_width, label='CBS', color=color_CBS,markerfacecolor=markerfacecolor4)
+    if len(DCMAPF_SR[i]) != 0:
+        plt.plot(densities[i][:len(DCMAPF_SR[i])], DCMAPF_SR[i], marker=maker5, linestyle=line_style3, linewidth=2, markersize=marker_size, markeredgewidth=marker_edge_width, label='DCMAPF', color=color_DCMAPF,markerfacecolor=markerfacecolor3)
+    if len(IDCMAPF_SR[i]) != 0:
+        plt.plot(densities[i][:len(IDCMAPF_SR[i])], IDCMAPF_SR[i], marker=maker6, linestyle=line_style4, linewidth=2, markersize=marker_size, markeredgewidth=marker_edge_width, label='IDCMAPF', color=color_IDCMAPF,markerfacecolor=markerfacecolor2)
+    if len(M_IDCMAPF_SR[i]) != 0:
+        plt.plot(densities[i][:len(M_IDCMAPF_SR[i])], M_IDCMAPF_SR[i], marker=maker7, linestyle=line_style4, linewidth=2, markersize=marker_size, markeredgewidth=marker_edge_width, label='M_IDCMAPF', color=color_M_IDCMAPF,markerfacecolor=markerfacecolor3)
 
 
-# plt.title('Map: random_64_64_20', fontsize=title_size)
-# plt.xlabel('Number of robots', fontsize=label_size)
-# plt.ylabel('Success rate', fontsize=label_size)
-# plt.xticks(r_3_other[::])
-# plt.ylim((y_bottom, y_top))
-# plt.legend(fontsize=legend_size)
-# plt.show()
+    plt.title('Map: ' + map_names[i], fontsize=title_size)
+    plt.xlabel('Number of robots', fontsize=label_size)
+    plt.ylabel('Success rate', fontsize=label_size)
+    plt.xticks(densities[i][::])
+    plt.ylim((y_bottom, y_top))
+    plt.legend(fontsize=legend_size)
+    plt.savefig(map_names[i] + "_SR" + ".png")
+    plt.show()
 
 
-# # # Create the 4 plot
-# plt.plot(r_4_other, ost003d_pibt, marker=maker1, linestyle=line_style1, linewidth=2, markersize=marker_size, markeredgewidth=marker_edge_width, label='PIBT', color="orange",markerfacecolor=markerfacecolor1)
-# plt.plot(r_4_other, ost003d_pibt_plus, marker=maker2, linestyle=line_style2, linewidth=2, markersize=marker_size, markeredgewidth=marker_edge_width, label='PIBT+', color="green",markerfacecolor=markerfacecolor2)
-# #plt.plot(r_4_other, ost003d_eecbs, marker=maker3, linestyle=line_style3, linewidth=2, markersize=marker_size, markeredgewidth=marker_edge_width, label='EECBS', color="blue",markerfacecolor=markerfacecolor3)
-# plt.plot(r_4_our, ost003d_M_IDCMAPF, marker=maker4, linestyle=line_style4, linewidth=2, markersize=marker_size, markeredgewidth=marker_edge_width, label='M_IDCMAPF', color="red",markerfacecolor=markerfacecolor4)
-
-
-# plt.title('Map: ost003d', fontsize=title_size)
-# plt.xlabel('Number of robots', fontsize=label_size)
-# plt.ylabel('Sum of costs', fontsize=label_size)
-# plt.xticks(r_4_other[::])
-# #plt.ylim()
-# plt.legend(fontsize=legend_size)
-# plt.show()
-
-# plt.plot(r_4_other, ost003d_e_pibt, marker=maker1, linestyle=line_style1, linewidth=2, markersize=marker_size, markeredgewidth=marker_edge_width, label='PIBT', color="orange",markerfacecolor=markerfacecolor1)
-# plt.plot(r_4_other, ost003d_e_pibt_plus, marker=maker2, linestyle=line_style2, linewidth=2, markersize=marker_size, markeredgewidth=marker_edge_width, label='PIBT+', color="green",markerfacecolor=markerfacecolor2)
-# #plt.plot(r_4_other, ost003d_e_eecbs, marker=maker3, linestyle=line_style3, linewidth=2, markersize=marker_size, markeredgewidth=marker_edge_width, label='EECBS', color="blue",markerfacecolor=markerfacecolor3)
-# plt.plot(r_4_our, ost003d_e_M_IDCMAPF, marker=maker4, linestyle=line_style4, linewidth=2, markersize=marker_size, markeredgewidth=marker_edge_width, label='M_IDCMAPF', color="red",markerfacecolor=markerfacecolor4)
-
-
-# plt.title('Map: ost003d', fontsize=title_size)
-# plt.xlabel('Number of robots', fontsize=label_size)
-# plt.ylabel('Success rate', fontsize=label_size)
-# plt.xticks(r_4_other[::])
-# plt.ylim((y_bottom, y_top))
-# plt.legend(fontsize=legend_size)
-# plt.show()

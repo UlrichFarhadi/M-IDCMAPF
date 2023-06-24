@@ -1,10 +1,10 @@
 import csv
 from statistics import mean
 
-# filename = "Tuning_data_ga/edge_weight/validator_test.csv"
-# encoding = "Edge weight" 
-filename = "Tuning_data_ga/node_vector/validator_test.csv"
-encoding = "Node vector"
+filename = "Tuning_data_ga/edge_weight/validator_test.csv"
+encoding = "Edge weight" 
+# filename = "Tuning_data_ga/node_vector/validator_test.csv"
+# encoding = "Node vector"
 
 title_size = 20
 xlabel_size = 15
@@ -116,5 +116,5 @@ for mutation_rate_value in [0.05, 0.10, 0.15]:
 
     # Display the plot
     if save:
-        plt.savefig("Tuning_data_ga/Plots" + encoding + "_" + str(mutation_rate_value) + ".png")
+        plt.savefig("Tuning_data_ga/Plots/" + encoding + "_" + str(mutation_rate_value) + ".png")
     plt.show()
