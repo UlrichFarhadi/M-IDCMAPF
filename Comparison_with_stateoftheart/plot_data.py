@@ -39,7 +39,7 @@ label_size = 13
 color_PIBT = "darkgoldenrod"
 color_PIBT_PLUS = "green"
 color_EECBS = "blue"
-color_CBS = "darkslategray"
+color_CBS = "teal"
 color_DCMAPF = "purple"
 color_IDCMAPF = "brown"
 color_M_IDCMAPF = "red"
@@ -164,9 +164,9 @@ for i in range(len(map_names)):
     if len(PIBT_PLUS_SOC[i]) != 0:
         plt.plot(densities[i][:len(PIBT_PLUS_SOC[i])], PIBT_PLUS_SOC[i], marker=maker2, linestyle=line_style2, linewidth=2, markersize=marker_size, markeredgewidth=marker_edge_width, label='PIBT+', color=color_PIBT_PLUS,markerfacecolor=markerfacecolor2)
     if len(EECBS_SOC[i]) != 0:
-        plt.plot(densities[i][:len(EECBS_SOC[i])], EECBS_SOC[i], marker=maker3, linestyle=line_style3, linewidth=2, markersize=marker_size, markeredgewidth=marker_edge_width, label='EECBS', color=color_EECBS,markerfacecolor=markerfacecolor2)
+        plt.plot(densities[i][:len(EECBS_SOC[i])], EECBS_SOC[i], marker=maker3, linestyle=line_style3, linewidth=2, markersize=marker_size, markeredgewidth=marker_edge_width, label='EECBS', color=color_EECBS,markerfacecolor=markerfacecolor3)
     if len(CBS_SOC[i]) != 0:
-        plt.plot(densities[i][:len(CBS_SOC[i])], CBS_SOC[i], marker=maker4, linestyle=line_style4, linewidth=2, markersize=marker_size, markeredgewidth=marker_edge_width, label='CBS', color=color_CBS,markerfacecolor=markerfacecolor4)
+        plt.plot(densities[i][:len(CBS_SOC[i])], CBS_SOC[i], marker=maker4, linestyle=line_style4, linewidth=2, markersize=marker_size, markeredgewidth=marker_edge_width, label='CBS', color=color_CBS,markerfacecolor=markerfacecolor2)
     if len(DCMAPF_SOC[i]) != 0:
         plt.plot(densities[i][:len(DCMAPF_SOC[i])], DCMAPF_SOC[i], marker=maker5, linestyle=line_style3, linewidth=2, markersize=marker_size, markeredgewidth=marker_edge_width, label='DCMAPF', color=color_DCMAPF,markerfacecolor=markerfacecolor3)
     if len(IDCMAPF_SOC[i]) != 0:
@@ -181,7 +181,7 @@ for i in range(len(map_names)):
     plt.xticks(densities[i][::])
     #plt.ylim()
     plt.legend(fontsize=legend_size)
-    plt.savefig(map_names[i] + "_SOC" + ".png")
+    plt.savefig("Comparison_with_stateoftheart/Plots/" + map_names[i] + "_SOC" + ".png")
     plt.show()
 
     if len(PIBT_SR[i]) != 0:
@@ -189,9 +189,9 @@ for i in range(len(map_names)):
     if len(PIBT_PLUS_SR[i]) != 0:
         plt.plot(densities[i][:len(PIBT_PLUS_SR[i])], PIBT_PLUS_SR[i], marker=maker2, linestyle=line_style2, linewidth=2, markersize=marker_size, markeredgewidth=marker_edge_width, label='PIBT+', color=color_PIBT_PLUS,markerfacecolor=markerfacecolor2)
     if len(EECBS_SR[i]) != 0:
-        plt.plot(densities[i][:len(EECBS_SR[i])], EECBS_SR[i], marker=maker3, linestyle=line_style3, linewidth=2, markersize=marker_size, markeredgewidth=marker_edge_width, label='EECBS', color=color_EECBS,markerfacecolor=markerfacecolor2)
+        plt.plot(densities[i][:len(EECBS_SR[i])], EECBS_SR[i], marker=maker3, linestyle=line_style3, linewidth=2, markersize=marker_size, markeredgewidth=marker_edge_width, label='EECBS', color=color_EECBS,markerfacecolor=markerfacecolor3)
     if len(CBS_SR[i]) != 0:
-        plt.plot(densities[i][:len(CBS_SR[i])], CBS_SR[i], marker=maker4, linestyle=line_style4, linewidth=2, markersize=marker_size, markeredgewidth=marker_edge_width, label='CBS', color=color_CBS,markerfacecolor=markerfacecolor4)
+        plt.plot(densities[i][:len(CBS_SR[i])], CBS_SR[i], marker=maker4, linestyle=line_style4, linewidth=2, markersize=marker_size, markeredgewidth=marker_edge_width, label='CBS', color=color_CBS,markerfacecolor=markerfacecolor2)
     if len(DCMAPF_SR[i]) != 0:
         plt.plot(densities[i][:len(DCMAPF_SR[i])], DCMAPF_SR[i], marker=maker5, linestyle=line_style3, linewidth=2, markersize=marker_size, markeredgewidth=marker_edge_width, label='DCMAPF', color=color_DCMAPF,markerfacecolor=markerfacecolor3)
     if len(IDCMAPF_SR[i]) != 0:
@@ -206,7 +206,7 @@ for i in range(len(map_names)):
     plt.xticks(densities[i][::])
     plt.ylim((y_bottom, y_top))
     plt.legend(fontsize=legend_size)
-    plt.savefig(map_names[i] + "_SR" + ".png")
+    plt.savefig("Comparison_with_stateoftheart/Plots/" + map_names[i] + "_SR" + ".png")
     plt.show()
 
 
