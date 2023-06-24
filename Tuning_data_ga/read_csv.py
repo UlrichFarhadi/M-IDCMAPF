@@ -1,8 +1,17 @@
 import csv
 from statistics import mean
 
-#filename = "Tuning_data_ga/edge_weight/validator_test.csv"  
+# filename = "Tuning_data_ga/edge_weight/validator_test.csv"
+# encoding = "Edge weight" 
 filename = "Tuning_data_ga/node_vector/validator_test.csv"
+encoding = "Node vector"
+
+title_size = 20
+xlabel_size = 15
+ylabel_size = 15
+
+colormap = 'binary'
+save = True
 
 soc_list = []
 span_list = []
@@ -93,17 +102,19 @@ for mutation_rate_value in [0.05, 0.10, 0.15]:
     data = np.array(data)
 
     # Plot the heatmap
-    plt.imshow(data, cmap='hot', interpolation='nearest')
+    plt.imshow(data, cmap=colormap, interpolation='nearest')
 
     # Set labels and ticks
     plt.xticks(range(len(x)), x)
     plt.yticks(range(len(y)), y)
-    plt.xlabel('Repetition')
-    plt.ylabel('Population size')
-    plt.title(f"With mutation rate: {mutation_rate_value}")
+    plt.xlabel('Environment repetitions', fontsize=xlabel_size)
+    plt.ylabel('Population size', fontsize=ylabel_size)
+    plt.title(f"Mutation rate: {mutation_rate_value}", fontsize=title_size)
 
     # Add a colorbar
     plt.colorbar()
 
     # Display the plot
+    if save:
+        plt.savefig("Tuning_data_ga/Plots" + encoding + "_" + str(mutation_rate_value) + ".png")
     plt.show()
