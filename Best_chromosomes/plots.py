@@ -114,6 +114,7 @@ for i in range(4):
     plt.xticks(densities[::])
     #plt.ylim()
     plt.legend(fontsize=legend_size)
+    plt.savefig("Best_chromosomes/Plots/" + data[i_1][map_name] + "_" + "soc" + ".png")
     plt.show()
 
     # Failrate Plot
@@ -127,6 +128,7 @@ for i in range(4):
     plt.xticks(densities[::])
     plt.ylim((y_bottom, y_top))
     plt.legend(fontsize=legend_size)
+    plt.savefig("Best_chromosomes/Plots/" + data[i_1][map_name] + "_" + "success_rate" + ".png")
     plt.show()
 
     # Wait Plot
@@ -140,7 +142,9 @@ for i in range(4):
     plt.xticks(densities[::])
     #plt.ylim()
     plt.legend(fontsize=legend_size)
+    plt.savefig("Best_chromosomes/Plots/" + data[i_1][map_name] + "_" + "waits" + ".png")
     plt.show()
+    
 
     # Conflicts Plot
     plt.plot(densities, conflicts_default, marker=maker2, linestyle=line_style1, linewidth=2, markersize=marker_size, markeredgewidth=marker_edge_width, label="Default", color="red",markerfacecolor=markerfacecolor2)
@@ -153,4 +157,5 @@ for i in range(4):
     plt.xticks(densities[::])
     #plt.ylim()
     plt.legend(fontsize=legend_size)
+    plt.savefig("Best_chromosomes/Plots/" + data[i_1][map_name] + "_" + "conflicts" + ".png")
     plt.show()
