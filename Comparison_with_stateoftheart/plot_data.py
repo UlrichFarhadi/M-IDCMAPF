@@ -170,12 +170,12 @@ for i in range(len(map_names)):
     if len(DCMAPF_SOC[i]) != 0:
         plt.plot(densities[i][:len(DCMAPF_SOC[i])], DCMAPF_SOC[i], marker=maker5, linestyle=line_style3, linewidth=2, markersize=marker_size, markeredgewidth=marker_edge_width, label='DCMAPF', color=color_DCMAPF,markerfacecolor=markerfacecolor3)
     if len(IDCMAPF_SOC[i]) != 0:
-        plt.plot(densities[i][:len(IDCMAPF_SOC[i])], IDCMAPF_SOC[i], marker=maker6, linestyle=line_style4, linewidth=2, markersize=marker_size, markeredgewidth=marker_edge_width, label='IDCMAPF', color=color_IDCMAPF,markerfacecolor=markerfacecolor2)
+        plt.plot(densities[i][:len(IDCMAPF_SOC[i])], IDCMAPF_SOC[i], marker=maker6, linestyle=line_style1, linewidth=2, markersize=marker_size, markeredgewidth=marker_edge_width, label='IDCMAPF', color=color_IDCMAPF,markerfacecolor=markerfacecolor2)
     if len(M_IDCMAPF_SOC[i]) != 0:
-        plt.plot(densities[i][:len(M_IDCMAPF_SOC[i])], M_IDCMAPF_SOC[i], marker=maker3, linestyle=line_style4, linewidth=2, markersize=marker_size, markeredgewidth=marker_edge_width, label='M_IDCMAPF', color=color_M_IDCMAPF,markerfacecolor=markerfacecolor3)
+        plt.plot(densities[i][:len(M_IDCMAPF_SOC[i])], M_IDCMAPF_SOC[i], marker=maker3, linestyle=line_style4, linewidth=2, markersize=marker_size, markeredgewidth=marker_edge_width, label='M-IDCMAPF', color=color_M_IDCMAPF,markerfacecolor=markerfacecolor3)
 
 
-    plt.title('Map: ' + map_names[i], fontsize=title_size)
+    plt.title(map_names[i], fontsize=title_size)
     plt.xlabel('Number of robots', fontsize=label_size)
     plt.ylabel('Sum of costs', fontsize=label_size)
     plt.xticks(densities[i][::])
@@ -195,12 +195,12 @@ for i in range(len(map_names)):
     if len(DCMAPF_SR[i]) != 0:
         plt.plot(densities[i][:len(DCMAPF_SR[i])], DCMAPF_SR[i], marker=maker5, linestyle=line_style3, linewidth=2, markersize=marker_size, markeredgewidth=marker_edge_width, label='DCMAPF', color=color_DCMAPF,markerfacecolor=markerfacecolor3)
     if len(IDCMAPF_SR[i]) != 0:
-        plt.plot(densities[i][:len(IDCMAPF_SR[i])], IDCMAPF_SR[i], marker=maker6, linestyle=line_style4, linewidth=2, markersize=marker_size, markeredgewidth=marker_edge_width, label='IDCMAPF', color=color_IDCMAPF,markerfacecolor=markerfacecolor2)
+        plt.plot(densities[i][:len(IDCMAPF_SR[i])], IDCMAPF_SR[i], marker=maker6, linestyle=line_style1, linewidth=2, markersize=marker_size, markeredgewidth=marker_edge_width, label='IDCMAPF', color=color_IDCMAPF,markerfacecolor=markerfacecolor2)
     if len(M_IDCMAPF_SR[i]) != 0:
-        plt.plot(densities[i][:len(M_IDCMAPF_SR[i])], M_IDCMAPF_SR[i], marker=maker3, linestyle=line_style4, linewidth=2, markersize=marker_size, markeredgewidth=marker_edge_width, label='M_IDCMAPF', color=color_M_IDCMAPF,markerfacecolor=markerfacecolor3)
+        plt.plot(densities[i][:len(M_IDCMAPF_SR[i])], M_IDCMAPF_SR[i], marker=maker3, linestyle=line_style4, linewidth=2, markersize=marker_size, markeredgewidth=marker_edge_width, label='M-IDCMAPF', color=color_M_IDCMAPF,markerfacecolor=markerfacecolor3)
 
 
-    plt.title('Map: ' + map_names[i], fontsize=title_size)
+    plt.title(map_names[i], fontsize=title_size)
     plt.xlabel('Number of robots', fontsize=label_size)
     plt.ylabel('Success rate', fontsize=label_size)
     plt.xticks(densities[i][::])
