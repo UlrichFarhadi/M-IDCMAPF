@@ -41,7 +41,7 @@ color_PIBT_PLUS = "green"
 color_EECBS = "blue"
 color_CBS = "teal"
 color_DCMAPF = "purple"
-color_IDCMAPF = "brown"
+color_IDCMAPF = "saddlebrown"
 color_M_IDCMAPF = "red"
 
 # Create some sample data
@@ -164,7 +164,7 @@ for i in range(len(map_names)):
     if len(PIBT_PLUS_SOC[i]) != 0:
         plt.plot(densities[i][:len(PIBT_PLUS_SOC[i])], PIBT_PLUS_SOC[i], marker=maker2, linestyle=line_style2, linewidth=2, markersize=marker_size, markeredgewidth=marker_edge_width, label='PIBT+', color=color_PIBT_PLUS,markerfacecolor=markerfacecolor2)
     if len(EECBS_SOC[i]) != 0:
-        plt.plot(densities[i][:len(EECBS_SOC[i])], EECBS_SOC[i], marker=maker3, linestyle=line_style3, linewidth=2, markersize=marker_size, markeredgewidth=marker_edge_width, label='EECBS', color=color_EECBS,markerfacecolor=markerfacecolor3)
+        plt.plot(densities[i][:len(EECBS_SOC[i])], EECBS_SOC[i], marker=maker7, linestyle=line_style3, linewidth=2, markersize=marker_size, markeredgewidth=marker_edge_width, label='EECBS', color=color_EECBS,markerfacecolor=markerfacecolor3)
     if len(CBS_SOC[i]) != 0:
         plt.plot(densities[i][:len(CBS_SOC[i])], CBS_SOC[i], marker=maker4, linestyle=line_style4, linewidth=2, markersize=marker_size, markeredgewidth=marker_edge_width, label='CBS', color=color_CBS,markerfacecolor=markerfacecolor2)
     if len(DCMAPF_SOC[i]) != 0:
@@ -172,7 +172,7 @@ for i in range(len(map_names)):
     if len(IDCMAPF_SOC[i]) != 0:
         plt.plot(densities[i][:len(IDCMAPF_SOC[i])], IDCMAPF_SOC[i], marker=maker6, linestyle=line_style4, linewidth=2, markersize=marker_size, markeredgewidth=marker_edge_width, label='IDCMAPF', color=color_IDCMAPF,markerfacecolor=markerfacecolor2)
     if len(M_IDCMAPF_SOC[i]) != 0:
-        plt.plot(densities[i][:len(M_IDCMAPF_SOC[i])], M_IDCMAPF_SOC[i], marker=maker7, linestyle=line_style4, linewidth=2, markersize=marker_size, markeredgewidth=marker_edge_width, label='M_IDCMAPF', color=color_M_IDCMAPF,markerfacecolor=markerfacecolor3)
+        plt.plot(densities[i][:len(M_IDCMAPF_SOC[i])], M_IDCMAPF_SOC[i], marker=maker3, linestyle=line_style4, linewidth=2, markersize=marker_size, markeredgewidth=marker_edge_width, label='M_IDCMAPF', color=color_M_IDCMAPF,markerfacecolor=markerfacecolor3)
 
 
     plt.title('Map: ' + map_names[i], fontsize=title_size)
@@ -189,7 +189,7 @@ for i in range(len(map_names)):
     if len(PIBT_PLUS_SR[i]) != 0:
         plt.plot(densities[i][:len(PIBT_PLUS_SR[i])], PIBT_PLUS_SR[i], marker=maker2, linestyle=line_style2, linewidth=2, markersize=marker_size, markeredgewidth=marker_edge_width, label='PIBT+', color=color_PIBT_PLUS,markerfacecolor=markerfacecolor2)
     if len(EECBS_SR[i]) != 0:
-        plt.plot(densities[i][:len(EECBS_SR[i])], EECBS_SR[i], marker=maker3, linestyle=line_style3, linewidth=2, markersize=marker_size, markeredgewidth=marker_edge_width, label='EECBS', color=color_EECBS,markerfacecolor=markerfacecolor3)
+        plt.plot(densities[i][:len(EECBS_SR[i])], EECBS_SR[i], marker=maker7, linestyle=line_style3, linewidth=2, markersize=marker_size, markeredgewidth=marker_edge_width, label='EECBS', color=color_EECBS,markerfacecolor=markerfacecolor3)
     if len(CBS_SR[i]) != 0:
         plt.plot(densities[i][:len(CBS_SR[i])], CBS_SR[i], marker=maker4, linestyle=line_style4, linewidth=2, markersize=marker_size, markeredgewidth=marker_edge_width, label='CBS', color=color_CBS,markerfacecolor=markerfacecolor2)
     if len(DCMAPF_SR[i]) != 0:
@@ -197,7 +197,7 @@ for i in range(len(map_names)):
     if len(IDCMAPF_SR[i]) != 0:
         plt.plot(densities[i][:len(IDCMAPF_SR[i])], IDCMAPF_SR[i], marker=maker6, linestyle=line_style4, linewidth=2, markersize=marker_size, markeredgewidth=marker_edge_width, label='IDCMAPF', color=color_IDCMAPF,markerfacecolor=markerfacecolor2)
     if len(M_IDCMAPF_SR[i]) != 0:
-        plt.plot(densities[i][:len(M_IDCMAPF_SR[i])], M_IDCMAPF_SR[i], marker=maker7, linestyle=line_style4, linewidth=2, markersize=marker_size, markeredgewidth=marker_edge_width, label='M_IDCMAPF', color=color_M_IDCMAPF,markerfacecolor=markerfacecolor3)
+        plt.plot(densities[i][:len(M_IDCMAPF_SR[i])], M_IDCMAPF_SR[i], marker=maker3, linestyle=line_style4, linewidth=2, markersize=marker_size, markeredgewidth=marker_edge_width, label='M_IDCMAPF', color=color_M_IDCMAPF,markerfacecolor=markerfacecolor3)
 
 
     plt.title('Map: ' + map_names[i], fontsize=title_size)
