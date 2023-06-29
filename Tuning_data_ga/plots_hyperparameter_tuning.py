@@ -9,6 +9,7 @@ encoding = "Node vector"
 title_size = 20
 xlabel_size = 15
 ylabel_size = 15
+scalelabel_size = 15
 
 #colormap = 'binary'
 colormap = 'GnBu'
@@ -113,7 +114,8 @@ for mutation_rate_value in [0.05, 0.10, 0.15]:
     plt.title(f"Mutation rate: {mutation_rate_value}", fontsize=title_size)
 
     # Add a colorbar
-    plt.colorbar()
+    colorbar = plt.colorbar()
+    colorbar.set_label('Sum of costs', fontsize=scalelabel_size)  # Add a label to the colorbar
 
     # Display the plot
     if save:
