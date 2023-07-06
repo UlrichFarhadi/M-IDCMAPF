@@ -116,7 +116,7 @@ def main():
                         budget=budget,
                         num_env_repetitions=env_repetition)
     ga_obj.fitness_exponent = 9
-    soc, span, chromosome = ga_obj.run(csv_filename=chromosome_append_filename, start=None, target=None, v_num_agents=num_agents, v_env_name=map_name, v_start_pos=startpos_test, v_target_pos=targetpos_test, v_rule_order=rule_order)
+    soc, span, chromosome = ga_obj.run(csv_filename=chromosome_append_filename, start=None, target=None, v_num_agents=num_agents, v_env_name=map_name, v_start_pos=startpos_test, v_target_pos=targetpos_test, v_rule_order=rule_order, logging_inside_run=False)
 
     write_to_csv([map_name, num_agents, encoding_scheme_name, mutation_rate, env_repetition, population_size, budget, soc, span, chromosome])
 
