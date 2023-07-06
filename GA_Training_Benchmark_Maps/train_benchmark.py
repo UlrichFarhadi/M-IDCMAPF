@@ -59,11 +59,21 @@ def write_to_csv(info, filename='output.csv', append=True):
         writer = csv.writer(file)
         writer.writerow(info)
 
+def count_rows(file_path):
+    with open(file_path, 'r') as file:
+        reader = csv.reader(file)
+        header = next(reader)  # Skip the header row
+        count = sum(1 for row in reader)  # Count the remaining rows
+    return count
+
+
 def main():
     #startpos_train, targetpos_train =  generate_start_and_target_to_list(number_of_experiments = max_gen, number_of_agents = num_agents,env="Environments/" + map_name + ".map")
     map_name_csv, num_agents_csv, rule_order_csv, encoding_scheme_csv, mutation_rate_csv, environment_repetitions_csv, pop_size_csv, budget_csv = 0,1,2,3,4,5,6,7
     logging_status_filename = "GA_Training_Benchmark_Maps/cases.csv"
     temp_file = "GA_Training_Benchmark_Maps/temp.csv"
+
+    row_count = count_rows(logging_status_filename)
 
     max_runs_test = 1000 # runs for validation?
 
@@ -86,7 +96,7 @@ def main():
                 population_size = int(row[pop_size_csv])
                 budget = int(row[budget_csv])
                 break
-        if max_counter == 11:
+        if max_counter == row_count:
             with open('GA_Training_Benchmark_Maps/inner_script_complete.txt', 'w') as f:
                 pass
             return

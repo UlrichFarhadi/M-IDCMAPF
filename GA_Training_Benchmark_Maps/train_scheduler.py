@@ -1,7 +1,7 @@
 import subprocess
 import os
 
-python_ver = 'python3'
+python_ver = 'python'
 command = [python_ver, "GA_Training_Benchmark_Maps/train_benchmark.py"]
 command_ttest = [python_ver, "GA_Training_Benchmark_Maps/ttest_benchmark_maps.py"]
 
