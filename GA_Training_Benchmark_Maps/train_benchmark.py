@@ -76,7 +76,7 @@ def main():
                 population_size = int(row[pop_size_csv])
                 budget = int(row[budget_csv])
                 break
-        if max_counter == 12:
+        if max_counter == 11:
             with open('GA_Training_Benchmark_Maps/inner_script_complete.txt', 'w') as f:
                 pass
             return
@@ -126,7 +126,7 @@ def main():
         csv_writer.writerow(next(csv_reader))
 
         for row in csv_reader:
-            if map_name == row[map_name_csv] and num_agents == int(row[num_agents_csv]) and encoding_scheme_name == row[encoding_scheme_csv]:
+            if map_name == row[map_name_csv] and num_agents == int(row[num_agents_csv]) and encoding_scheme_name == row[encoding_scheme_csv] and mutation_rate == float(row[mutation_rate_csv]) and population_size == int(row[pop_size_csv]) and env_repetition == int(row[environment_repetitions_csv]):
                 #new_row = row
                 row[-1] = str(int(row[-1]) + 1) # check if this update row
                 #csv_writer.writerow(row)
