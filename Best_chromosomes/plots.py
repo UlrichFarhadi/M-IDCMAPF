@@ -108,7 +108,7 @@ for i in range(4):
     plt.plot(densities, soc_best_node, marker=maker3, linestyle=line_style3, linewidth=2, markersize=marker_size, markeredgewidth=marker_edge_width, label=data[i_n_1][encoding_scheme_name], color="blue",markerfacecolor=markerfacecolor3)
     plt.plot(densities, soc_best_edge, marker=maker1, linestyle=line_style4, linewidth=2, markersize=marker_size, markeredgewidth=marker_edge_width, label=data[i_1][encoding_scheme_name], color="purple",markerfacecolor=markerfacecolor1)
 
-    plt.title(data[i_1][map_name], fontsize=title_size)
+    #plt.title(data[i_1][map_name], fontsize=title_size)
     plt.xlabel('Number of robots', fontsize=label_size)
     plt.ylabel('Sum of costs', fontsize=label_size)
     plt.xticks(densities[::])
@@ -122,7 +122,7 @@ for i in range(4):
     plt.plot(densities, error_best_node, marker=maker3, linestyle=line_style3, linewidth=2, markersize=marker_size, markeredgewidth=marker_edge_width, label=data[i_n_1][encoding_scheme_name], color="blue",markerfacecolor=markerfacecolor3)
     plt.plot(densities, error_best_edge, marker=maker1, linestyle=line_style4, linewidth=2, markersize=marker_size, markeredgewidth=marker_edge_width, label=data[i_1][encoding_scheme_name], color="purple",markerfacecolor=markerfacecolor1)
 
-    plt.title(data[i_1][map_name], fontsize=title_size)
+    #plt.title(data[i_1][map_name], fontsize=title_size)
     plt.xlabel('Number of robots', fontsize=label_size)
     plt.ylabel('Success rate', fontsize=label_size)
     plt.xticks(densities[::])
@@ -136,7 +136,7 @@ for i in range(4):
     plt.plot(densities, waits_best_node, marker=maker3, linestyle=line_style3, linewidth=2, markersize=marker_size, markeredgewidth=marker_edge_width, label=data[i_n_1][encoding_scheme_name], color="blue",markerfacecolor=markerfacecolor3)
     plt.plot(densities, waits_best_edge, marker=maker1, linestyle=line_style4, linewidth=2, markersize=marker_size, markeredgewidth=marker_edge_width, label=data[i_1][encoding_scheme_name], color="purple",markerfacecolor=markerfacecolor1)
 
-    plt.title(data[i_1][map_name], fontsize=title_size)
+    #plt.title(data[i_1][map_name], fontsize=title_size)
     plt.xlabel('Number of robots', fontsize=label_size)
     plt.ylabel('Average number of waits', fontsize=label_size)
     plt.xticks(densities[::])
@@ -151,7 +151,7 @@ for i in range(4):
     plt.plot(densities, conflicts_best_node, marker=maker3, linestyle=line_style3, linewidth=2, markersize=marker_size, markeredgewidth=marker_edge_width, label=data[i_n_1][encoding_scheme_name], color="blue",markerfacecolor=markerfacecolor3)
     plt.plot(densities, conflicts_best_edge, marker=maker1, linestyle=line_style4, linewidth=2, markersize=marker_size, markeredgewidth=marker_edge_width, label=data[i_1][encoding_scheme_name], color="purple",markerfacecolor=markerfacecolor1)
 
-    plt.title(data[i_1][map_name], fontsize=title_size)
+    #plt.title(data[i_1][map_name], fontsize=title_size)
     plt.xlabel('Number of robots', fontsize=label_size)
     plt.ylabel('Average number of conflicts', fontsize=label_size)
     plt.xticks(densities[::])
