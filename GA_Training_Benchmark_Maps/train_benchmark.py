@@ -11,6 +11,16 @@ import numpy as np
 from dask.distributed import Client, LocalCluster
 from dask import delayed
 import csv
+maxInt = sys.maxsize
+while True:
+    # decrease the maxInt value by factor 10 
+    # as long as the OverflowError occurs.
+    try:
+        csv.field_size_limit(maxInt)
+        break
+    except OverflowError:
+        maxInt = int(maxInt/10)
+csv.field_size_limit(maxInt)
 import ast
 from tqdm import tqdm
 from scipy import stats
@@ -118,7 +128,7 @@ def main():
     ga_obj.fitness_exponent = 9
     soc, span, chromosome = ga_obj.run(csv_filename=chromosome_append_filename, start=None, target=None, v_num_agents=num_agents, v_env_name=map_name, v_start_pos=startpos_test, v_target_pos=targetpos_test, v_rule_order=rule_order, logging_inside_run=False)
 
-    write_to_csv([map_name, num_agents, encoding_scheme_name, mutation_rate, env_repetition, population_size, budget, soc, span, chromosome], filename="GA_Training_Benchmark_Maps/chromosomes")
+    write_to_csv([map_name, num_agents, encoding_scheme_name, mutation_rate, env_repetition, population_size, budget, soc, span, chromosome], filename="GA_Training_Benchmark_Maps/chromosomes.csv")
 
     with open(logging_status_filename, 'r') as input_file, open(temp_file, 'w', newline='') as output_file:
         csv_reader = csv.reader(input_file)

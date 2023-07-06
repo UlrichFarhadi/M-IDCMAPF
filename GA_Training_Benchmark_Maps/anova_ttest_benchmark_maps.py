@@ -11,6 +11,16 @@ from dask.distributed import Client, LocalCluster
 from dask import delayed
 from dask import compute
 import csv
+maxInt = sys.maxsize
+while True:
+    # decrease the maxInt value by factor 10 
+    # as long as the OverflowError occurs.
+    try:
+        csv.field_size_limit(maxInt)
+        break
+    except OverflowError:
+        maxInt = int(maxInt/10)
+csv.field_size_limit(maxInt)
 import ast
 from tqdm import tqdm
 from scipy import stats
@@ -81,20 +91,22 @@ def read_my_file(filename):
             data.append(row)
         return data
     
-def load_csv_file_with_chromosomes(filename):
+def load_csv_file_with_chromosomes(filename, map_name, num_agents, encoding_scheme_name, mutation_rate, environment_repetitions, pop_size):
+    map_name_csv, num_agents_csv, encoding_scheme_name_csv, mutation_rate_csv, environment_repetitions_csv, pop_size_csv, budget_csv, soc, span, chromosome = 0,1,2,3,4,5,6,7,8,9
     data = []
     with open(filename, 'r') as file:
         csv_reader = csv.reader(file)
         for row in csv_reader:
-            data.append(row)
+            if map_name == row[map_name_csv] and num_agents == int(row[num_agents_csv]) and encoding_scheme_name == row[encoding_scheme_name_csv] and mutation_rate == float(row[mutation_rate_csv]) and environment_repetitions == int(row[environment_repetitions_csv]) and pop_size == int(row[pop_size_csv]):
+                data.append(row)
     return data
 
 def find_highest_a_with_list(data):
     max_a = float('inf')
     max_list = None
     for row in data:
-        a = float(row[0])
-        lst = ast.literal_eval(row[2])
+        a = float(row[7])
+        lst = ast.literal_eval(row[9])
         #lst = row[2].strip('[]').split(',')
         if a < max_a:
             max_a = a
@@ -117,10 +129,13 @@ def main():
     rule_orders_list = []
     encoding_scheme_list = []
     encoding_scheme_names_list = []
+    mutation_rate_list = []
+    environment_repetitions_list = []
+    pop_size_list = []
 
-    map_name_csv, num_agents_csv, rule_order_csv, encoding_scheme_csv = 0,1,2,3
+    map_name_csv, num_agents_csv, rule_order_csv, encoding_scheme_csv, mutation_rate_csv, environment_repetitions_csv, pop_size_csv, budget_csv = 0,1,2,3,4,5,6,7
 
-    with open("Best_chromosomes/logging_status_edge.csv", 'r') as log_file:
+    with open("GA_Training_Benchmark_Maps/cases.csv", 'r') as log_file:
         csv_reader = csv.reader(log_file)
         headline = next(csv_reader)
         for row in csv_reader:
@@ -129,24 +144,14 @@ def main():
             rule_orders_list.append(ast.literal_eval(row[rule_order_csv]))
             encoding_scheme_list.append(row[encoding_scheme_csv] == "edge_weight")
             encoding_scheme_names_list.append(row[encoding_scheme_csv])
-
-    with open("Best_chromosomes/logging_status_node.csv", 'r') as log_file:
-        csv_reader = csv.reader(log_file)
-        headline = next(csv_reader)
-        for row in csv_reader:
-            map_names_list.append(row[map_name_csv])
-            num_agents_list.append(int(row[num_agents_csv]))
-            rule_orders_list.append(ast.literal_eval(row[rule_order_csv]))
-            encoding_scheme_list.append(row[encoding_scheme_csv] == "edge_weight")
-            encoding_scheme_names_list.append(row[encoding_scheme_csv])
+            mutation_rate_list.append(float(row[mutation_rate_csv]))
+            environment_repetitions_list.append(int(row[environment_repetitions_csv]))
+            pop_size_list.append(int(row[pop_size_csv]))
 
     for i in range(len(map_names_list)):
         #num_agents = 600
         if map_names_list[i] == "random-32-32-20":
             num_experiments = 250
-        else:
-            num_experiments = 1000
-        # env_name_direct = "empty-10-10"
         env = "Environments/" + map_names_list[i] + ".map"
         # best_rule_perm = [0, 1, 2, 3, 4, 5, 6]
         # encoding_scheme = "edge weight" # node vector
@@ -154,7 +159,7 @@ def main():
 
         startpos = load_position_list_from_nplist("Statistical_test_comparison/start_and_target_positions_for_experiments/" + map_names_list[i] + "_" + str(num_agents_list[i]) + "_agents_start")
         targetpos = load_position_list_from_nplist("Statistical_test_comparison/start_and_target_positions_for_experiments/" + map_names_list[i] + "_" + str(num_agents_list[i]) + "_agents_target")
-        data = load_csv_file_with_chromosomes("Best_chromosomes/Chromosomes/" + map_names_list[i] + "_" + str(num_agents_list[i]) + "_" + encoding_scheme_names_list[i] + ".csv")
+        data = load_csv_file_with_chromosomes("GA_Training_Benchmark_Maps/chromosomes.csv", map_names_list[i], num_agents_list[i], encoding_scheme_names_list[i], mutation_rate_list[i], environment_repetitions_list[i], pop_size_list[i])
         chromosome = find_highest_a_with_list(data)
         #print("Running First Experiment...")
         best_cost, best_span, best_failrate, best_waits, best_conflicts = run_experiment(times=num_experiments, rule_order=rule_orders_list[i], chromosome=chromosome, startpos=startpos, targetpos=targetpos, environment=env, agents_amt=num_agents_list[i], encoding=encoding_scheme_names_list[i])
@@ -190,8 +195,8 @@ def main():
         default_waits = sum(default_waits) / len(default_waits)
         default_conflicts = sum(default_conflicts) / len(default_conflicts)
 
-        variables_to_log = [map_names_list[i], num_agents_list[i], encoding_scheme_names_list[i], round(p_value_SOC, 4), round(p_value_waits, 4), round(p_value_conflicts, 4), rule_orders_list[i], best_cost, best_span, best_failrate, best_waits, best_conflicts, default_cost, default_span, default_failrate, default_waits, default_conflicts]
-        log_to_csv("Best_chromosomes/" + "results.csv", variables_to_log)
+        variables_to_log = [map_names_list[i], num_agents_list[i], encoding_scheme_names_list[i], mutation_rate_list[i], environment_repetitions_list[i], pop_size_list[i], round(p_value_SOC, 4), round(p_value_waits, 4), round(p_value_conflicts, 4), rule_orders_list[i], best_cost, best_span, best_failrate, best_waits, best_conflicts, default_cost, default_span, default_failrate, default_waits, default_conflicts]
+        log_to_csv("GA_Training_Benchmark_Maps/" + "results.csv", variables_to_log)
 
 if __name__ == "__main__":
     main()
