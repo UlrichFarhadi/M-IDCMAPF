@@ -298,7 +298,7 @@ class GA_Fluid(GA_template):
         return sum(res[:len(start_pos)])/len(start_pos), sum(res[len(start_pos):])/len(start_pos)
 
 
-    def run(self, v_num_agents, v_env_name, v_start_pos, v_target_pos, v_rule_order, csv_filename = "Fluid_chromosome1", start = None, target = None):
+    def run(self, v_num_agents, v_env_name, v_start_pos, v_target_pos, v_rule_order, csv_filename = "Fluid_chromosome1", start = None, target = None, logging_inside_run = True):
         # cluster = LocalCluster()
         # #client = Client(cluster)
         # client = Client("127.0.0.1:8786")
@@ -382,9 +382,12 @@ class GA_Fluid(GA_template):
                 if self.edge_weight_encoding:
                     folder = "edge_weight"
                 else:
-                    folder = "node_vector" 
-                self.write_to_csv([v_soc, v_span, self.list_of_best_solutions[0][0]], f"Best_chromosomes/Chromosomes/{csv_filename}.csv")
-                return self.list_of_best_solutions[0][0]
+                    folder = "node_vector"
+                if logging_inside_run: 
+                    self.write_to_csv([v_soc, v_span, self.list_of_best_solutions[0][0]], f"{csv_filename}.csv")
+                    return self.list_of_best_solutions[0][0]
+                else:
+                    return v_soc, v_span, self.list_of_best_solutions[0][0]
             # if gen%5 == 0:
             #     pass
                 # print(self.list_of_best_solutions[0])   

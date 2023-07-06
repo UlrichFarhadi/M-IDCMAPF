@@ -112,7 +112,7 @@ def main():
             mutation_rate = 0.1
             env_repetition = 15
 
-        chromosome_append_filename = f"{map_name}_{num_agents}_{encoding_scheme_name}"
+        chromosome_append_filename = f"Best_chromosomes/Chromosomes/{map_name}_{num_agents}_{encoding_scheme_name}"
                     
         startpos_test, targetpos_test =  generate_start_and_target_to_list(number_of_experiments = max_runs_test, number_of_agents = num_agents,env="Environments/" + map_name + ".map")
         ga_obj = GA_Fluid(environment_function=universal_fitness_function_with_directed_map,

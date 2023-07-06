@@ -16,8 +16,8 @@ from GA.GA_Fluid import GA_Fluid
 from generate_start_and_target import generate_start_and_target_to_numpy, load_position_list_from_nplist, generate_start_and_target_to_list, generate_start_and_target_from_scenario
 
 
-for env in ["random-32-32-20"]:
-    for num_agents in [100, 150, 200]:
+for env in ["random-64-64-20", "empty-48-48"]:
+    for num_agents in [400]:
         start, target = generate_start_and_target_from_scenario(f"Scenario\{env}-random-",num_agents)
         start = start*10
         target = target*10

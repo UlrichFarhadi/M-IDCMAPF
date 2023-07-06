@@ -43,7 +43,7 @@ for encoding in encoding_scheme:
                     sum_matrix = matrix
                 else:
                     sum_matrix += matrix
-            sum_matrix = sum_matrix / (num_file + 1)
+            sum_matrix = sum_matrix / (num_file)
             max_val = np.max(sum_matrix)
             #print(sum_matrix)
 
@@ -78,7 +78,7 @@ for encoding in encoding_scheme:
                     sum_matrix = matrix
                 else:
                     sum_matrix += matrix
-            sum_matrix = sum_matrix / (num_file + 1)
+            sum_matrix = sum_matrix / (num_file)
             #print(sum_matrix)
 
             matrix = np.transpose(sum_matrix)
@@ -123,3 +123,4 @@ for encoding in encoding_scheme:
                 plt.savefig(f"Traffic/plots/{env}_{num_agent}_{encoding}")
                 # plt.show()
 
+print("Done")
