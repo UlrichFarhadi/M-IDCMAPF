@@ -22,8 +22,10 @@ def load_obstacles(env):
         for row in reader:
             data = ast.literal_eval(row[0])
         return data
+    
+data = {}
 
-for endcoding in encoding_scheme:
+for encoding in encoding_scheme:
     for env, num_agents in env_list:
         for num_agent in num_agents:
             if env == "random-32-32-20":
@@ -33,7 +35,7 @@ for endcoding in encoding_scheme:
 
             sum_matrix = None    
             for i in range(num_file):
-                file_name = f"traffic_data/{endcoding}_{env}_{num_agent}_{i}.txt"
+                file_name = f"traffic_data/{encoding}_{env}_{num_agent}_{i}.txt"
                 matrix = np.loadtxt(file_name)
 
                 # Sum the matrices
@@ -41,7 +43,42 @@ for endcoding in encoding_scheme:
                     sum_matrix = matrix
                 else:
                     sum_matrix += matrix
-            sum_matrix = sum_matrix / num_file
+            sum_matrix = sum_matrix / (num_file + 1)
+            max_val = np.max(sum_matrix)
+            #print(sum_matrix)
+
+            # Append new data
+            key = (env, num_agent)
+            if key not in data:
+                # Key is not present, add the data
+                new_entry = {key: max_val}
+                data.update(new_entry)
+            else:
+                # Key exists, compare the max_val and replace if necessary
+                existing_max_val = data[key]
+                if max_val > existing_max_val:
+                    data[key] = max_val
+
+
+for encoding in encoding_scheme:
+    for env, num_agents in env_list:
+        for num_agent in num_agents:
+            if env == "random-32-32-20":
+                num_file = 250-1
+            else:
+                num_file = 1000-1
+
+            sum_matrix = None    
+            for i in range(num_file):
+                file_name = f"traffic_data/{encoding}_{env}_{num_agent}_{i}.txt"
+                matrix = np.loadtxt(file_name)
+
+                # Sum the matrices
+                if sum_matrix is None:
+                    sum_matrix = matrix
+                else:
+                    sum_matrix += matrix
+            sum_matrix = sum_matrix / (num_file + 1)
             #print(sum_matrix)
 
             matrix = np.transpose(sum_matrix)
@@ -49,9 +86,12 @@ for endcoding in encoding_scheme:
             # Create a figure and axes
             fig, ax = plt.subplots()
 
+            key = (env, num_agent)
+            max_val = data[key]
+
 
             #plt.imshow(matrix, cmap='YlGnBu', origin="lower")
-            heatmap = ax.imshow(matrix, cmap='GnBu', origin="lower")
+            heatmap = ax.imshow(matrix, cmap='GnBu', origin="lower", vmax=max_val)
             
             # from  matplotlib.colors import LinearSegmentedColormap
             # cmap=LinearSegmentedColormap.from_list('gr',["g", "r"], N=256) 
@@ -67,18 +107,19 @@ for endcoding in encoding_scheme:
                     ax.plot(field[0]-0.05, field[1]+0.05, marker='o', markersize=4.5, color='black', alpha=0.8)
 
             # Add colorbar for reference
-            fig.colorbar(heatmap)
+            if encoding == "edge_weight":
+                fig.colorbar(heatmap)
             # Remove x and y ticks
             ax.set_xticks([])
             ax.set_yticks([])
             # Add a title
             if env == "fluid_test_smallscale":
-                plt.title(f"passage", fontsize=17)
-                plt.savefig(f"Traffic/plots/passage_{num_agent}_{endcoding}")
+                # plt.title(f"passage", fontsize=17)
+                plt.savefig(f"Traffic/plots/passage_{num_agent}_{encoding}")
             else:
-                plt.title(f"{env}", fontsize=17)
+                # plt.title(f"{env}", fontsize=17)
 
                 # Show the plot
-                plt.savefig(f"Traffic/plots/{env}_{num_agent}_{endcoding}")
+                plt.savefig(f"Traffic/plots/{env}_{num_agent}_{encoding}")
                 # plt.show()
 
