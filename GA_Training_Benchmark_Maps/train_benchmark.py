@@ -94,9 +94,9 @@ def main():
     chromosome_append_filename = "chromosomes.csv"
                 
     # Load configurations
-    #startpos_test = load_position_list_from_nplist(f"GA_Training_Benchmark_Maps/Validation_configurations/{map_name}_{num_agents}_start")
-    #targetpos_test = load_position_list_from_nplist(f"GA_Training_Benchmark_Maps/Validation_configurations/{map_name}_{num_agents}_target")
-    startpos_test, targetpos_test =  generate_start_and_target_to_list(number_of_experiments = 1, number_of_agents = num_agents, env="Environments/" + map_name + ".map")
+    startpos_test = load_position_list_from_nplist(f"GA_Training_Benchmark_Maps/Validation_configurations/{map_name}_{num_agents}_start")
+    targetpos_test = load_position_list_from_nplist(f"GA_Training_Benchmark_Maps/Validation_configurations/{map_name}_{num_agents}_target")
+    #startpos_test, targetpos_test =  generate_start_and_target_to_list(number_of_experiments = 1, number_of_agents = num_agents, env="Environments/" + map_name + ".map")
 
     ga_obj = GA_Fluid(environment_function=universal_fitness_function_with_directed_map,
                         env="Environments/" + map_name + ".map",
