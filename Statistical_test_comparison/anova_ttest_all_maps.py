@@ -179,6 +179,10 @@ def main():
         # print("SOC using no encoding: ", sum(default_cost)/len(default_cost))
         # print("makespan using no encoding: ", sum(default_span)/len(default_span))
         # print("failrate using no encoding: ", default_failrate / num_experiments)
+        for idx, _ in enumerate(best_cost):
+            data = [map_names_list[i], num_agents_list[i], best_cost[idx], best_span[idx], best_failrate, best_waits[idx], best_conflicts[idx], default_cost[idx], default_span[idx], default_failrate, default_waits[idx], default_conflicts[idx]]
+            log_to_csv("Best_chromosomes/" + "results_list.csv", data)
+
         best_cost = sum(best_cost) / len(best_cost)
         best_span = sum(best_span) / len(best_span)
         best_failrate = best_failrate / num_experiments
