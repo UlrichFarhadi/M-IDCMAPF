@@ -160,7 +160,7 @@ def main():
         best_cost, best_span, best_failrate, best_waits, best_conflicts = run_experiment(times=num_experiments, rule_order=rule_orders_list[i], chromosome=chromosome, startpos=startpos, targetpos=targetpos, environment=env, agents_amt=num_agents_list[i], encoding=encoding_scheme_names_list[i])
         #print("Running Second Experiment...")
         default_cost, default_span, default_failrate, default_waits, default_conflicts = run_experiment(times=num_experiments, rule_order=rule_orders_list[i], chromosome=[], startpos=startpos, targetpos=targetpos, environment=env, agents_amt=num_agents_list[i], encoding=encoding_scheme_names_list[i])
-
+        
         # print("T-test on cost")
         # print("0 is best_rule, 1 is default_rule")
         t_statistic_SOC, p_value_SOC = stats.ttest_ind(best_cost, default_cost)
