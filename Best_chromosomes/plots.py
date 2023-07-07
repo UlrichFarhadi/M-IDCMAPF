@@ -114,7 +114,7 @@ for i in range(4):
     plt.xticks(densities[::])
     #plt.ylim()
     plt.legend(fontsize=legend_size)
-    plt.savefig("Best_chromosomes/Plots/" + data[i_1][map_name] + "_" + "soc" + ".png")
+    plt.savefig("Best_chromosomes/Plots/Plots_graphs/" + data[i_1][map_name] + "_" + "soc" + ".png")
     plt.show()
 
     # Failrate Plot
@@ -128,7 +128,7 @@ for i in range(4):
     plt.xticks(densities[::])
     plt.ylim((y_bottom, y_top))
     plt.legend(fontsize=legend_size)
-    plt.savefig("Best_chromosomes/Plots/" + data[i_1][map_name] + "_" + "success_rate" + ".png")
+    plt.savefig("Best_chromosomes/Plots/Plots_graphs/" + data[i_1][map_name] + "_" + "success_rate" + ".png")
     plt.show()
 
     # Wait Plot
@@ -142,7 +142,7 @@ for i in range(4):
     plt.xticks(densities[::])
     #plt.ylim()
     plt.legend(fontsize=legend_size)
-    plt.savefig("Best_chromosomes/Plots/" + data[i_1][map_name] + "_" + "waits" + ".png")
+    plt.savefig("Best_chromosomes/Plots/Plots_graphs/" + data[i_1][map_name] + "_" + "waits" + ".png")
     plt.show()
     
 
@@ -157,5 +157,5 @@ for i in range(4):
     plt.xticks(densities[::])
     #plt.ylim()
     plt.legend(fontsize=legend_size)
-    plt.savefig("Best_chromosomes/Plots/" + data[i_1][map_name] + "_" + "conflicts" + ".png")
+    plt.savefig("Best_chromosomes/Plots/Plots_graphs/" + data[i_1][map_name] + "_" + "conflicts" + ".png")
     plt.show()

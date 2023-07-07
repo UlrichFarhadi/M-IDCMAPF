@@ -7,6 +7,7 @@ from dask import delayed
 import csv
 import os
 import sys
+import ast
 from statistics import mean
 import matplotlib.pyplot as plt
 
@@ -21,7 +22,7 @@ sys.path.append(parent_dir)
 data = []
 
 # Open the CSV file
-with open("Best_chromosomes/results.csv", 'r') as file:
+with open("Best_chromosomes/results_list.csv", 'r') as file:
     # Create a CSV reader object
     csv_reader = csv.reader(file)
 
@@ -44,7 +45,8 @@ marker_edge_width = 2
 
 title_size = 15
 legend_size = 12
-label_size = 13
+label_size = 15
+x_row_size = 14
 
 y_bottom = 0.0
 y_top = 1.01
@@ -60,16 +62,21 @@ markerfacecolor3 = None
 markerfacecolor4 = None
 
 # Box settings
-sep_val = 100
-width = 50
+sep_val = 250
+width = 200
 x = np.array([1000,2000,3000])
-box_color_1 = 'skyblue'
-box_color_2 = 'lightgreen'
-box_color_3 = 'lightpink'
+box_color_default = '#03396c'
+box_color_node = '#005b96'
+box_color_edge = '#6497b1'
+linestyle_default = '--'
+linestyle_node = ':'
+linestyle_edge = '-.'
 
 
 
-map_name, num_agents, encoding_scheme_name, p_value_SOC, p_value_waits, p_value_conflicts, rule_order, best_cost, best_span, best_failrate, best_waits, best_conflicts, default_cost, default_span, default_failrate, default_waits, default_conflicts = range(len(data[0]))
+#map_name, num_agents, encoding_scheme_name, p_value_SOC, p_value_waits, p_value_conflicts, rule_order, best_cost, best_span, best_failrate, best_waits, best_conflicts, default_cost, default_span, default_failrate, default_waits, default_conflicts = range(len(data[0]))
+
+map_name, num_agents, encoding_scheme_name, best_cost, best_span, best_failrate, best_waits, best_conflicts, default_cost, default_span, default_failrate, default_waits, default_conflicts = 0,1,2,3,4,5,6,7,8,9,10,11,12
 
 for i in range(len(data)):
     if data[i][map_name] == "fluid_test_smallscale":
@@ -79,8 +86,8 @@ for i in range(len(data)):
     elif data[i][encoding_scheme_name] == "node_vector":
         data[i][encoding_scheme_name] = "Node vector"
 
-for i in range(len(data)):
-    print(data[i][map_name] + " " + data[i][num_agents] + " " + data[i][encoding_scheme_name] + " : " + "SOC_best = " + data[i][best_cost] + " SOC_default = " + data[i][default_cost] + " P_value_SOC = " + data[i][p_value_SOC] + "Waits_best = " + data[i][best_waits] + " Waits_default = " + data[i][default_waits] + " P_value_Waits = " + data[i][p_value_waits] + "Conflicts_best = " + data[i][best_conflicts] + " Conflicts_default = " + data[i][default_conflicts] + " P_value_Conflicts = " + data[i][p_value_conflicts])
+# for i in range(len(data)):
+#     print(data[i][map_name] + " " + data[i][num_agents] + " " + data[i][encoding_scheme_name] + " : " + "SOC_best = " + data[i][best_cost] + " SOC_default = " + data[i][default_cost] + " P_value_SOC = " + data[i][p_value_SOC] + "Waits_best = " + data[i][best_waits] + " Waits_default = " + data[i][default_waits] + " P_value_Waits = " + data[i][p_value_waits] + "Conflicts_best = " + data[i][best_conflicts] + " Conflicts_default = " + data[i][default_conflicts] + " P_value_Conflicts = " + data[i][p_value_conflicts])
 
 
 
@@ -93,91 +100,66 @@ for i in range(4):
     i_n_3 = i * 3 + 2 + 12
 
     # Create some sample data
-    soc_best_edge = [float(data[i_1][best_cost]), float(data[i_2][best_cost]), float(data[i_3][best_cost])]
-    soc_best_node = [float(data[i_n_1][best_cost]), float(data[i_n_2][best_cost]), float(data[i_n_3][best_cost])]
-    soc_default = [float(data[i_1][default_cost]), float(data[i_2][default_cost]), float(data[i_3][default_cost])]
+    soc_best_edge = [ast.literal_eval(data[i_1][best_cost]), ast.literal_eval(data[i_2][best_cost]), ast.literal_eval(data[i_3][best_cost])]
+    soc_best_node = [ast.literal_eval(data[i_n_1][best_cost]), ast.literal_eval(data[i_n_2][best_cost]), ast.literal_eval(data[i_n_3][best_cost])]
+    soc_default = [ast.literal_eval(data[i_1][default_cost]), ast.literal_eval(data[i_2][default_cost]), ast.literal_eval(data[i_3][default_cost])]
 
-    error_best_edge = [1-float(data[i_1][best_failrate]), 1-float(data[i_2][best_failrate]), 1-float(data[i_3][best_failrate])]
-    error_best_node = [1-float(data[i_n_1][best_failrate]), 1-float(data[i_n_2][best_failrate]), 1-float(data[i_n_3][best_failrate])]
-    error_default = [1-float(data[i_1][default_failrate]), 1-float(data[i_2][default_failrate]), 1-float(data[i_3][default_failrate])]
+    error_best_edge = [1-ast.literal_eval(data[i_1][best_failrate]), 1-ast.literal_eval(data[i_2][best_failrate]), 1-ast.literal_eval(data[i_3][best_failrate])]
+    error_best_node = [1-ast.literal_eval(data[i_n_1][best_failrate]), 1-ast.literal_eval(data[i_n_2][best_failrate]), 1-ast.literal_eval(data[i_n_3][best_failrate])]
+    error_default = [1-ast.literal_eval(data[i_1][default_failrate]), 1-ast.literal_eval(data[i_2][default_failrate]), 1-ast.literal_eval(data[i_3][default_failrate])]
 
-    waits_best_edge = [float(data[i_1][best_waits]), float(data[i_2][best_waits]), float(data[i_3][best_waits])]
-    waits_best_node = [float(data[i_n_1][best_waits]), float(data[i_n_2][best_waits]), float(data[i_n_3][best_waits])]
-    waits_default = [float(data[i_1][default_waits]), float(data[i_2][default_waits]), float(data[i_3][default_waits])]
+    waits_best_edge = [ast.literal_eval(data[i_1][best_waits]), ast.literal_eval(data[i_2][best_waits]), ast.literal_eval(data[i_3][best_waits])]
+    waits_best_node = [ast.literal_eval(data[i_n_1][best_waits]), ast.literal_eval(data[i_n_2][best_waits]), ast.literal_eval(data[i_n_3][best_waits])]
+    waits_default = [ast.literal_eval(data[i_1][default_waits]), ast.literal_eval(data[i_2][default_waits]), ast.literal_eval(data[i_3][default_waits])]
 
-    conflicts_best_edge = [float(data[i_1][best_conflicts]), float(data[i_2][best_conflicts]), float(data[i_3][best_conflicts])]
-    conflicts_best_node = [float(data[i_n_1][best_conflicts]), float(data[i_n_2][best_conflicts]), float(data[i_n_3][best_conflicts])]
-    conflicts_default = [float(data[i_1][default_conflicts]), float(data[i_2][default_conflicts]), float(data[i_3][default_conflicts])]
+    conflicts_best_edge = [ast.literal_eval(data[i_1][best_conflicts]), ast.literal_eval(data[i_2][best_conflicts]), ast.literal_eval(data[i_3][best_conflicts])]
+    conflicts_best_node = [ast.literal_eval(data[i_n_1][best_conflicts]), ast.literal_eval(data[i_n_2][best_conflicts]), ast.literal_eval(data[i_n_3][best_conflicts])]
+    conflicts_default = [ast.literal_eval(data[i_1][default_conflicts]), ast.literal_eval(data[i_2][default_conflicts]), ast.literal_eval(data[i_3][default_conflicts])]
 
     densities = [float(data[i_1][num_agents]), float(data[i_2][num_agents]), float(data[i_3][num_agents])]
 
 
-
-    # SOC plot
-    #plt.plot(densities, soc_default, marker=maker2, linestyle=line_style1, linewidth=2, markersize=marker_size, markeredgewidth=marker_edge_width, label="Default", color="red",markerfacecolor=markerfacecolor2)
-    #plt.plot(densities, soc_best_node, marker=maker3, linestyle=line_style3, linewidth=2, markersize=marker_size, markeredgewidth=marker_edge_width, label=data[i_n_1][encoding_scheme_name], color="blue",markerfacecolor=markerfacecolor3)
-    #plt.plot(densities, soc_best_edge, marker=maker1, linestyle=line_style4, linewidth=2, markersize=marker_size, markeredgewidth=marker_edge_width, label=data[i_1][encoding_scheme_name], color="purple",markerfacecolor=markerfacecolor1)
-
-
-
     encoding_names = ["Default", data[i_n_1][encoding_scheme_name], data[i_1][encoding_scheme_name]]
 
-    box1 = plt.boxplot(soc_default, 0, '', positions=x-sep_val, widths=width, patch_artist=True, boxprops=dict(facecolor=box_color_1))
-    box2 = plt.boxplot(soc_best_node, 0, '', positions=x, widths=width, patch_artist=True, boxprops=dict(facecolor=box_color_2))
-    box3 = plt.boxplot(soc_best_edge, 0, '', positions=x+sep_val, widths=width, patch_artist=True, boxprops=dict(facecolor=box_color_3))
+    box1 = plt.boxplot(soc_default, 0, '', positions=x-sep_val, widths=width, patch_artist=True, boxprops=dict(facecolor=box_color_default))
+    box2 = plt.boxplot(soc_best_node, 0, '', positions=x, widths=width, patch_artist=True, boxprops=dict(facecolor=box_color_node))
+    box3 = plt.boxplot(soc_best_edge, 0, '', positions=x+sep_val, widths=width, patch_artist=True, boxprops=dict(facecolor=box_color_edge))
 
-    plt.xticks(x, [str(densities[0]), str(densities[1]), str(densities[2])])
+    plt.xticks(x, [str(int(densities[0])), str(int(densities[1])), str(int(densities[2]))], fontsize=x_row_size)
     legends = [box1["boxes"][0], box2["boxes"][0], box3["boxes"][0]]
     labels = encoding_names
-    plt.legend(legends, labels, loc='upper right')
+    plt.legend(legends, labels, loc='upper left', fontsize=legend_size)
     #plt.title(data[i_1][map_name], fontsize=title_size)
     plt.xlabel('Number of robots', fontsize=label_size)
     plt.ylabel('Sum of costs', fontsize=label_size)
-    #plt.xticks(densities[::])
-    #plt.ylim()
-    plt.legend(fontsize=legend_size)
-    plt.savefig("Best_chromosomes/Plots/" + data[i_1][map_name] + "_" + "soc" + ".png")
+    plt.savefig("Best_chromosomes/Plots/Plots_boxplots/" + data[i_1][map_name] + "_" + "soc" + ".png")
     plt.show()
 
-    # # Failrate Plot
-    # plt.plot(densities, error_default, marker=maker2, linestyle=line_style1, linewidth=2, markersize=marker_size, markeredgewidth=marker_edge_width, label="Default", color="red",markerfacecolor=markerfacecolor2)
-    # plt.plot(densities, error_best_node, marker=maker3, linestyle=line_style3, linewidth=2, markersize=marker_size, markeredgewidth=marker_edge_width, label=data[i_n_1][encoding_scheme_name], color="blue",markerfacecolor=markerfacecolor3)
-    # plt.plot(densities, error_best_edge, marker=maker1, linestyle=line_style4, linewidth=2, markersize=marker_size, markeredgewidth=marker_edge_width, label=data[i_1][encoding_scheme_name], color="purple",markerfacecolor=markerfacecolor1)
-
-    # #plt.title(data[i_1][map_name], fontsize=title_size)
-    # plt.xlabel('Number of robots', fontsize=label_size)
-    # plt.ylabel('Success rate', fontsize=label_size)
-    # plt.xticks(densities[::])
-    # plt.ylim((y_bottom, y_top))
-    # plt.legend(fontsize=legend_size)
-    # plt.savefig("Best_chromosomes/Plots/" + data[i_1][map_name] + "_" + "success_rate" + ".png")
-    # plt.show()
-
     # # Wait Plot
-    # plt.plot(densities, waits_default, marker=maker2, linestyle=line_style1, linewidth=2, markersize=marker_size, markeredgewidth=marker_edge_width, label="Default", color="red",markerfacecolor=markerfacecolor2)
-    # plt.plot(densities, waits_best_node, marker=maker3, linestyle=line_style3, linewidth=2, markersize=marker_size, markeredgewidth=marker_edge_width, label=data[i_n_1][encoding_scheme_name], color="blue",markerfacecolor=markerfacecolor3)
-    # plt.plot(densities, waits_best_edge, marker=maker1, linestyle=line_style4, linewidth=2, markersize=marker_size, markeredgewidth=marker_edge_width, label=data[i_1][encoding_scheme_name], color="purple",markerfacecolor=markerfacecolor1)
+    box1 = plt.boxplot(waits_default, 0, '', positions=x-sep_val, widths=width, patch_artist=True, boxprops=dict(facecolor=box_color_default))
+    box2 = plt.boxplot(waits_best_node, 0, '', positions=x, widths=width, patch_artist=True, boxprops=dict(facecolor=box_color_node))
+    box3 = plt.boxplot(waits_best_edge, 0, '', positions=x+sep_val, widths=width, patch_artist=True, boxprops=dict(facecolor=box_color_edge))
 
-    # #plt.title(data[i_1][map_name], fontsize=title_size)
-    # plt.xlabel('Number of robots', fontsize=label_size)
-    # plt.ylabel('Average number of waits', fontsize=label_size)
-    # plt.xticks(densities[::])
-    # #plt.ylim()
-    # plt.legend(fontsize=legend_size)
-    # plt.savefig("Best_chromosomes/Plots/" + data[i_1][map_name] + "_" + "waits" + ".png")
-    # plt.show()
+    plt.xticks(x, [str(int(densities[0])), str(int(densities[1])), str(int(densities[2]))], fontsize=x_row_size)
+    legends = [box1["boxes"][0], box2["boxes"][0], box3["boxes"][0]]
+    labels = encoding_names
+    plt.legend(legends, labels, loc='upper left', fontsize=legend_size)
+    plt.xlabel('Number of robots', fontsize=label_size)
+    plt.ylabel('Average number of waits', fontsize=label_size)
+    plt.savefig("Best_chromosomes/Plots/Plots_boxplots/" + data[i_1][map_name] + "_" + "waits" + ".png")
+    plt.show()
     
 
     # # Conflicts Plot
-    # plt.plot(densities, conflicts_default, marker=maker2, linestyle=line_style1, linewidth=2, markersize=marker_size, markeredgewidth=marker_edge_width, label="Default", color="red",markerfacecolor=markerfacecolor2)
-    # plt.plot(densities, conflicts_best_node, marker=maker3, linestyle=line_style3, linewidth=2, markersize=marker_size, markeredgewidth=marker_edge_width, label=data[i_n_1][encoding_scheme_name], color="blue",markerfacecolor=markerfacecolor3)
-    # plt.plot(densities, conflicts_best_edge, marker=maker1, linestyle=line_style4, linewidth=2, markersize=marker_size, markeredgewidth=marker_edge_width, label=data[i_1][encoding_scheme_name], color="purple",markerfacecolor=markerfacecolor1)
+    box1 = plt.boxplot(conflicts_default, 0, '', positions=x-sep_val, widths=width, patch_artist=True, boxprops=dict(facecolor=box_color_default))
+    box2 = plt.boxplot(conflicts_best_node, 0, '', positions=x, widths=width, patch_artist=True, boxprops=dict(facecolor=box_color_node))
+    box3 = plt.boxplot(conflicts_best_edge, 0, '', positions=x+sep_val, widths=width, patch_artist=True, boxprops=dict(facecolor=box_color_edge))
 
-    # #plt.title(data[i_1][map_name], fontsize=title_size)
-    # plt.xlabel('Number of robots', fontsize=label_size)
-    # plt.ylabel('Average number of conflicts', fontsize=label_size)
-    # plt.xticks(densities[::])
-    # #plt.ylim()
-    # plt.legend(fontsize=legend_size)
-    # plt.savefig("Best_chromosomes/Plots/" + data[i_1][map_name] + "_" + "conflicts" + ".png")
-    # plt.show()
+    plt.xticks(x, [str(int(densities[0])), str(int(densities[1])), str(int(densities[2]))], fontsize=x_row_size)
+    legends = [box1["boxes"][0], box2["boxes"][0], box3["boxes"][0]]
+    labels = encoding_names
+    plt.legend(legends, labels, loc='upper left', fontsize=legend_size)
+    plt.xlabel('Number of robots', fontsize=label_size)
+    plt.ylabel('Average number of conflicts', fontsize=label_size)
+    plt.savefig("Best_chromosomes/Plots/Plots_boxplots/" + data[i_1][map_name] + "_" + "conflicts" + ".png")
+    plt.show()

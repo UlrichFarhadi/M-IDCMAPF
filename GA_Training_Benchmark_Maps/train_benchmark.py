@@ -82,7 +82,7 @@ def main():
         headline = next(csv_reader)
         max_counter = 0
         for row in csv_reader:
-            if int(row[-1]) >= 10:
+            if int(row[-1]) >= 2:
                 max_counter += 1
                 continue
             else:
