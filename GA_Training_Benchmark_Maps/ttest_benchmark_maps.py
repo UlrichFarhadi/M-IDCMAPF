@@ -150,8 +150,8 @@ def main():
 
     for i in range(len(map_names_list)):
         #num_agents = 600
-        if map_names_list[i] == "random-32-32-20":
-            num_experiments = 250
+        # if map_names_list[i] == "random-32-32-20":
+        num_experiments = 250
         env = "Environments/" + map_names_list[i] + ".map"
         # best_rule_perm = [0, 1, 2, 3, 4, 5, 6]
         # encoding_scheme = "edge weight" # node vector
