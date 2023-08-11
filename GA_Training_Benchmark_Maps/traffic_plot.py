@@ -21,7 +21,8 @@ def load_obstacles(env):
             data = ast.literal_eval(row[0])
         return data
     
-
+data = {}
+matrix_with_info = []
 # List all files in the folder
 file_list = [item for item in os.listdir(folder_path) if os.path.isfile(os.path.join(folder_path, item))]
 
@@ -75,30 +76,21 @@ with open(logging_status_filename, 'r') as log_file:
 
         matrix = matrix / experments_size
         max_val = np.max(matrix)
+        # Append new data
+        key = (env)
+        if key not in data:
+            # Key is not present, add the data
+            new_entry = {key: max_val}
+            data.update(new_entry)
+        else:
+            # Key exists, compare the max_val and replace if necessary
+            existing_max_val = data[key]
+            if max_val > existing_max_val:
+                data[key] = max_val
         matrix = np.transpose(matrix)
 
-        # Create a figure and axes
-        fig, ax = plt.subplots()
-        heatmap = ax.imshow(matrix, cmap='GnBu', origin="lower", vmax=max_val)
-        
-        black_fields = load_obstacles(env)
-        if dotbool:
-            for field in black_fields:
-                # ax.add_patch(plt.Rectangle((field[0]-0.5, field[1]-0.5), 1, 1, fill=True, color='black', alpha=1))
-                ax.plot(field[0]-0.05, field[1]+0.05, marker='o', markersize=4.5, color='black', alpha=0.8)
-        # Add colorbar for reference
-        # if encoding == "edge_weight":
-        fig.colorbar(heatmap)
-        # Remove x and y ticks
-        ax.set_xticks([])
-        ax.set_yticks([])
-        # Add a title
-    
-        # plt.title(f"{env}", fontsize=17)
+        matrix_with_info.append((matrix,env,num_agents,encoding_scheme_name,mutation_rate,env_repetition))
 
-        # Show the plot
-        plt.savefig(f"GA_Training_Benchmark_Maps/plots/{env}_{num_agents}_{encoding_scheme_name}_{mutation_rate}_{env_repetition}.png")
-        # plt.show()
 
 ############################################
 ############################################
@@ -143,17 +135,34 @@ for i, experments_sum in enumerate(experments_sums):
         env = map
         matrix = matrix / experments_size
         max_val = np.max(matrix)
+         # Append new data
+        key = (env)
+        if key not in data:
+            # Key is not present, add the data
+            new_entry = {key: max_val}
+            data.update(new_entry)
+        else:
+            # Key exists, compare the max_val and replace if necessary
+            existing_max_val = data[key]
+            if max_val > existing_max_val:
+                data[key] = max_val
         matrix = np.transpose(matrix)
+        
+        matrix_with_info.append((matrix,env,num_agents,"default",0,0))
 
+for matrix,env,num_agents,encoding_scheme_name,mutation_rate,env_repetition in matrix_with_info:
         # Create a figure and axes
         fig, ax = plt.subplots()
-        heatmap = ax.imshow(matrix, cmap='GnBu', origin="lower", vmax=max_val)
+        heatmap = ax.imshow(matrix, cmap='GnBu', origin="lower", vmax=data[env])
         
         black_fields = load_obstacles(env)
         if dotbool:
             for field in black_fields:
                 # ax.add_patch(plt.Rectangle((field[0]-0.5, field[1]-0.5), 1, 1, fill=True, color='black', alpha=1))
-                ax.plot(field[0]-0.05, field[1]+0.05, marker='o', markersize=4.5, color='black', alpha=0.8)
+                if env == "random-64-64-20":
+                    ax.plot(field[0]-0.05, field[1]+0.05, marker='o', markersize=3, color='black', alpha=0.8)
+                else:
+                    ax.plot(field[0]-0.05, field[1]+0.05, marker='o', markersize=4.5, color='black', alpha=0.8)
         # Add colorbar for reference
         # if encoding == "edge_weight":
         fig.colorbar(heatmap)
@@ -164,9 +173,12 @@ for i, experments_sum in enumerate(experments_sums):
     
         # plt.title(f"{env}", fontsize=17)
 
-        # Show the plot
-        plt.savefig(f"GA_Training_Benchmark_Maps/plots/{env}_{num_agents}_default.png")
-        # plt.show()
+        if encoding_scheme_name == "default":
+            plt.savefig(f"GA_Training_Benchmark_Maps/plots/{env}_{num_agents}_default.png")
+        else:
+            plt.savefig(f"GA_Training_Benchmark_Maps/plots/{env}_{num_agents}_{encoding_scheme_name}_{mutation_rate}_{env_repetition}.png")
+
+
+
 
 print("Done")
-
