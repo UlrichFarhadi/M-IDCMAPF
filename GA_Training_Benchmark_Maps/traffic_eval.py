@@ -47,7 +47,7 @@ from Logger.logger import Logger
 from GA.GA_Rules import GA_Priority_rules
 from generate_start_and_target import generate_start_and_target_to_list, generate_start_and_target_from_scenario, load_position_list_from_nplist
 
-def environment_func(rule_order, chromosome, start_position, target_position, env, amount_of_agents = 10, agent_type=IDCMAPF_agent,  delay=0.0001, fig_size_factor=20, node_size=10, linewidth=0.5, dpi=40 , display=False, max_timestep=1000, encoding="edge_weight", traffic_id=-1):
+def environment_func(rule_order, chromosome, start_position, target_position, env, amount_of_agents = 10, agent_type=IDCMAPF_agent,  delay=0.0001, fig_size_factor=20, node_size=10, linewidth=0.5, dpi=40 , display=False, max_timestep=1000, encoding="edge_weight", traffic_id=-1, folder_path_traffic= "GA_Training_Benchmark_Maps/Traffic"):
     # Create the map object
     map = Map_directed()
     map.generate_map(env)
@@ -58,18 +58,18 @@ def environment_func(rule_order, chromosome, start_position, target_position, en
     elif encoding == "node_vector":
         map.update_weight_on_map_by_directional(chromosome)
 
-    swarm = Swarm_IDCMAPF(map, amount_of_agents = amount_of_agents, agent_type=agent_type, rule_order=rule_order, traffic_id=traffic_id, folder_path_traffic= "GA_Training_Benchmark_Maps/Traffic")
+    swarm = Swarm_IDCMAPF(map, amount_of_agents = amount_of_agents, agent_type=agent_type, rule_order=rule_order, traffic_id=traffic_id, folder_path_traffic= folder_path_traffic)
     renderer = Renderer(map, delay=delay, fig_size_factor=fig_size_factor, node_size=node_size, linewidth=linewidth, dpi=dpi)
     simulator = Simulator(map, swarm, renderer, display=display, max_timestep=max_timestep, positions_for_agents=[start_position, target_position])
     return simulator.main_loop()
 
-def run_experiment(times, rule_order, chromosome, startpos, targetpos, environment, agents_amt, encoding , traffic_id=-1):
+def run_experiment(times, rule_order, chromosome, startpos, targetpos, environment, agents_amt, encoding , traffic_id=-1,folder_path_traffic = "GA_Training_Benchmark_Maps/Traffic"):
     list_of_cost = []
     list_of_makespan = []
     list_of_waits = []
     list_of_conflicts = []
     for i in range(times):
-        cost, makespan, waits, conflicts = delayed(environment_func, nout=4)(rule_order=rule_order, chromosome=chromosome, start_position=startpos[i], target_position=targetpos[i], env=environment, amount_of_agents=agents_amt, encoding=encoding, traffic_id=1000*traffic_id+i)
+        cost, makespan, waits, conflicts = delayed(environment_func, nout=4)(rule_order=rule_order, chromosome=chromosome, start_position=startpos[i], target_position=targetpos[i], env=environment, amount_of_agents=agents_amt, encoding=encoding, traffic_id=1000*traffic_id+i,folder_path_traffic = folder_path_traffic)
         list_of_cost.append(cost)
         list_of_makespan.append(makespan)
         list_of_waits.append(waits)
@@ -167,6 +167,13 @@ def main():
         #print("Running Second Experiment...")
         # default_cost, default_span, default_failrate, default_waits, default_conflicts = run_experiment(times=num_experiments, rule_order=rule_orders_list[i], chromosome=[], startpos=startpos, targetpos=targetpos, environment=env, agents_amt=num_agents_list[i], encoding=encoding_scheme_names_list[i])
 
+    for i,(map,num_agents,rule_order) in enumerate(zip(["random-32-32-20","empty-48-48","random-64-64-20"],[200,400,400],[[0,4,3,1,5,6,2],[0,1,2,3,4,5,6],[0,4,3,1,5,6,2]])):
+        traffic_id = i
+        num_experiments = 250
+        env = "Environments/" + map + ".map"
+        startpos = load_position_list_from_nplist("Statistical_test_comparison/start_and_target_positions_for_experiments/" + map + "_" + str(num_agents) + "_agents_start")
+        targetpos = load_position_list_from_nplist("Statistical_test_comparison/start_and_target_positions_for_experiments/" + map + "_" + str(num_agents) + "_agents_target")
+        default_cost, default_span, default_failrate, default_waits, default_conflicts = run_experiment(times=num_experiments, rule_order=rule_order, chromosome=[], startpos=startpos, targetpos=targetpos, environment=env, agents_amt=num_agents, encoding=encoding_scheme_names_list[i],traffic_id=traffic_id, folder_path_traffic="GA_Training_Benchmark_Maps/Traffic/Default")
 if __name__ == "__main__":
     main()
 
