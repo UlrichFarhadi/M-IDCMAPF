@@ -24,7 +24,7 @@ from Agent.IDCMAPF_agent import IDCMAPF_agent
 from Swarm.swarm import Swarm
 
 class Swarm_IDCMAPF(Swarm):
-    def __init__(self, map: Map, amount_of_agents: int, agent_type = Agent, rule_order=[0,1,2,3,4,5,6], traffic_id=-1):
+    def __init__(self, map: Map, amount_of_agents: int, agent_type = Agent, rule_order=[0,1,2,3,4,5,6], traffic_id=-1, folder_path_traffic = "traffic_data"):
         super().__init__(map, amount_of_agents, agent_type)
         self.agents_at_goal = 0
         self.rule_order = rule_order
@@ -35,6 +35,7 @@ class Swarm_IDCMAPF(Swarm):
         self.waitcount_trafic = []
         self.conflictcount_bool = True
         self.conflictcount = []
+        self.folder_path_traffic = folder_path_traffic
 
     def set_rule_order_of_agents(self):
         # Generate a list of Agent objects and add them to self.agents
@@ -137,7 +138,7 @@ class Swarm_IDCMAPF(Swarm):
 
     def load_modify_save_trafic(self):
         if self.traffic_id != -1:
-            filename = f"traffic_data/{self.encoding_scheme}_{os.path.splitext(os.path.basename(self.map.current_map_file))[0]}_{len(self.agents)}_{self.traffic_id}.txt"
+            filename = f"{self.folder_path_traffic}/{self.encoding_scheme}_{os.path.splitext(os.path.basename(self.map.current_map_file))[0]}_{len(self.agents)}_{self.traffic_id}.txt"
             if os.path.isfile(filename):
                 matrix = np.loadtxt(filename)
             else:

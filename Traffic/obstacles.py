@@ -36,6 +36,6 @@ def log_to_csv(filename, data):
         writer.writerow(data)
 
 
-env_list = ["fluid_test_smallscale", "empty-10-10", "random-10-10-20", "random-32-32-20"]
+env_list = [ "empty-48-48", "random-64-64-20"]
 for env in env_list:
     obstacles(env)
