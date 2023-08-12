@@ -131,7 +131,7 @@ print("Sums of each:")
 for i, experments_sum in enumerate(experments_sums):
     print(f"experiment {i + 1} sum:\n{experments_sum}")
 
-    for matrix,map, num_agents in zip(experments_sums,["random-32-32-20","empty-48-48","random-64-64-20"],[200,400,400]):
+    for matrix, map, num_agents in zip(experments_sums,["random-32-32-20","empty-48-48","random-64-64-20"],[200,400,400]):
         env = map
         matrix = matrix / experments_size
         max_val = np.max(matrix)
