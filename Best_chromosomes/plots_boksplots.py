@@ -44,9 +44,10 @@ marker_size = 6
 marker_edge_width = 2
 
 title_size = 15
-legend_size = 12
-label_size = 15
-x_row_size = 14
+legend_size = 18
+label_size = 20
+x_row_size = 19
+y_ticks_size = 14
 
 y_bottom = 0.0
 y_top = 1.01
@@ -126,13 +127,14 @@ for i in range(4):
     box3 = plt.boxplot(soc_best_edge, 0, '', positions=x+sep_val, widths=width, patch_artist=True, boxprops=dict(facecolor=box_color_edge))
 
     plt.xticks(x, [str(int(densities[0])), str(int(densities[1])), str(int(densities[2]))], fontsize=x_row_size)
+    plt.yticks(fontsize=y_ticks_size)
     legends = [box1["boxes"][0], box2["boxes"][0], box3["boxes"][0]]
     labels = encoding_names
     plt.legend(legends, labels, loc='upper left', fontsize=legend_size)
     #plt.title(data[i_1][map_name], fontsize=title_size)
     plt.xlabel('Number of robots', fontsize=label_size)
     plt.ylabel('Sum of costs', fontsize=label_size)
-    plt.savefig("Best_chromosomes/Plots/Plots_boxplots/" + data[i_1][map_name] + "_" + "soc" + ".png")
+    plt.savefig("Best_chromosomes/Plots/Plots_boxplots/" + data[i_1][map_name] + "_" + "soc" + ".png", bbox_inches='tight')
     plt.show()
 
     # # Wait Plot
@@ -141,12 +143,13 @@ for i in range(4):
     box3 = plt.boxplot(waits_best_edge, 0, '', positions=x+sep_val, widths=width, patch_artist=True, boxprops=dict(facecolor=box_color_edge))
 
     plt.xticks(x, [str(int(densities[0])), str(int(densities[1])), str(int(densities[2]))], fontsize=x_row_size)
+    plt.yticks(fontsize=y_ticks_size)
     legends = [box1["boxes"][0], box2["boxes"][0], box3["boxes"][0]]
     labels = encoding_names
     plt.legend(legends, labels, loc='upper left', fontsize=legend_size)
     plt.xlabel('Number of robots', fontsize=label_size)
-    plt.ylabel('Average number of waits', fontsize=label_size)
-    plt.savefig("Best_chromosomes/Plots/Plots_boxplots/" + data[i_1][map_name] + "_" + "waits" + ".png")
+    plt.ylabel('Number of waits', fontsize=label_size)
+    plt.savefig("Best_chromosomes/Plots/Plots_boxplots/" + data[i_1][map_name] + "_" + "waits" + ".png", bbox_inches='tight')
     plt.show()
     
 
@@ -156,10 +159,11 @@ for i in range(4):
     box3 = plt.boxplot(conflicts_best_edge, 0, '', positions=x+sep_val, widths=width, patch_artist=True, boxprops=dict(facecolor=box_color_edge))
 
     plt.xticks(x, [str(int(densities[0])), str(int(densities[1])), str(int(densities[2]))], fontsize=x_row_size)
+    plt.yticks(fontsize=y_ticks_size)
     legends = [box1["boxes"][0], box2["boxes"][0], box3["boxes"][0]]
     labels = encoding_names
     plt.legend(legends, labels, loc='upper left', fontsize=legend_size)
     plt.xlabel('Number of robots', fontsize=label_size)
-    plt.ylabel('Average number of conflicts', fontsize=label_size)
-    plt.savefig("Best_chromosomes/Plots/Plots_boxplots/" + data[i_1][map_name] + "_" + "conflicts" + ".png")
+    plt.ylabel('Number of conflicts', fontsize=label_size)
+    plt.savefig("Best_chromosomes/Plots/Plots_boxplots/" + data[i_1][map_name] + "_" + "conflicts" + ".png", bbox_inches='tight')
     plt.show()
