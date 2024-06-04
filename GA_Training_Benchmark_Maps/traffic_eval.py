@@ -167,7 +167,7 @@ def main():
         #print("Running Second Experiment...")
         # default_cost, default_span, default_failrate, default_waits, default_conflicts = run_experiment(times=num_experiments, rule_order=rule_orders_list[i], chromosome=[], startpos=startpos, targetpos=targetpos, environment=env, agents_amt=num_agents_list[i], encoding=encoding_scheme_names_list[i])
 
-    for i,(map,num_agents,rule_order) in enumerate(zip(["random-32-32-20","empty-48-48","random-64-64-20"],[200,400,400],[[0,4,3,1,5,6,2],[0,1,2,3,4,5,6],[0,4,3,1,5,6,2]])):
+    for i,(map,num_agents,rule_order) in enumerate(zip(["passage_large"],[40],[[0,1,2,3,4,5,6]])):
         traffic_id = i
         num_experiments = 250
         env = "Environments/" + map + ".map"

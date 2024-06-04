@@ -56,3 +56,8 @@ map_name = "random-64-64-20"
 num_agents = 400
 
 generate_start_and_target_to_numpy(configurations, num_agents, f"Environments/{map_name}.map", f"GA_Training_Benchmark_Maps/Validation_configurations/{map_name}_{num_agents}_start", f"GA_Training_Benchmark_Maps/Validation_configurations/{map_name}_{num_agents}_target")
+
+map_name = "passage_large"
+num_agents = 40
+
+generate_start_and_target_to_numpy(configurations, num_agents, f"Environments/{map_name}.map", f"GA_Training_Benchmark_Maps/Validation_configurations/{map_name}_{num_agents}_start", f"GA_Training_Benchmark_Maps/Validation_configurations/{map_name}_{num_agents}_target")
