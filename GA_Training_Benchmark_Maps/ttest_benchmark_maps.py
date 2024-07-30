@@ -41,9 +41,8 @@ from Swarm.swarm import Swarm
 from Swarm.swarm_IDCMAPF import Swarm_IDCMAPF
 from Renderer.renderer import Renderer
 #from Renderer.renderer_pygame import Renderer as Renderer_Pygame
+from IDCMAPF_Tests.tests import *
 from Simulator.simulator import Simulator
-from IDCMAPF_Tests.tests import * # Dårlig kodeskik at importere en hel fil
-from Logger.logger import Logger
 from GA.GA_Rules import GA_Priority_rules
 from generate_start_and_target import generate_start_and_target_to_list, generate_start_and_target_from_scenario, load_position_list_from_nplist
 
@@ -147,6 +146,20 @@ def main():
             mutation_rate_list.append(float(row[mutation_rate_csv]))
             environment_repetitions_list.append(int(row[environment_repetitions_csv]))
             pop_size_list.append(int(row[pop_size_csv]))
+
+    # Clear the "GA_Training_Benchmark_Maps/results.csv" contents and insert the header line
+    header_line_for_logged_variables = [
+        "map_name", "num_agents", "encoding_scheme_name", "mutation_rate", 
+        "environment_repetitions", "pop_size", "p_value_SOC", "p_value_waits", 
+        "p_value_conflicts", "rule_order", "best_cost", "best_span", 
+        "best_failrate", "best_waits", "best_conflicts", "default_cost", 
+        "default_span", "default_failrate", "default_waits", "default_conflicts"
+    ]
+
+    with open("GA_Training_Benchmark_Maps/results.csv", 'w', newline='') as csvfile:
+        writer = csv.writer(csvfile)
+        writer.writerow(header_line_for_logged_variables)
+
 
     for i in range(len(map_names_list)):
         #num_agents = 600
