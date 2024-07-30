@@ -16,7 +16,8 @@ sys.path.append(parent_dir)
 
 from GA.GA_template import GA_template
 from Simulator.simulator import Simulator
-from IDCMAPF_Tests.tests import *
+from Agent.agent import Agent
+from Agent.IDCMAPF_agent import IDCMAPF_agent
 
 class GA_Priority_rules(GA_template):
     def __init__(self,

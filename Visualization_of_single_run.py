@@ -14,6 +14,7 @@ import csv
 import ast
 from tqdm import tqdm
 from scipy import stats
+print("Importing Done")
 
 # Self made imports
 
@@ -54,7 +55,7 @@ def run_one_sim(num_agents, env_name, rule_order=[0,1,2,3,4,5,6], positions_for_
     swarm = Swarm_IDCMAPF(map, amount_of_agents=num_agents, agent_type=IDCMAPF_agent, rule_order=rule_order)
 
     # Create the renderer object
-    renderer = Renderer(map, delay=0.0001, fig_size_factor=8, node_size=40, linewidth=0.5, dpi=400)
+    renderer = Renderer(map, delay=0.0001, fig_size_factor=6, node_size=75, linewidth=0.5, dpi=400)
 
     # Create the simulator object
     if len(positions_for_agents) == 0:
@@ -64,7 +65,7 @@ def run_one_sim(num_agents, env_name, rule_order=[0,1,2,3,4,5,6], positions_for_
     cost, makespan ,_ ,_ = simulator.main_loop()
 
     if save_video:    
-        renderer.create_animation("GA_Training_Benchmark_Maps/Videos/" + env_name + "_" + str(num_agents) + ".mp4", fps=5)
+        renderer.create_animation("Videos/" + env_name + "_" + str(num_agents) + ".mp4", fps=5)
 
     return cost, makespan
 
@@ -90,32 +91,10 @@ def flatten(l):
 
 if __name__ == '__main__':
     #---------------------------------------------------------------------------------------------------------------------------------------------#
-    # Run this line below for a visualization of the map "random-32-32-20" with 100 agents and rule order [1,2,3,4,5,6] (no graph optimization)
-    #run_one_sim(num_agents=100, env_name="random-32-32-20", rule_order=[0,1,2,3,4,5,6], display=True, save_video=False)
+    # Run this line below for a visualization of the given map with "num_agents" amount of agents and rule order defined in "rule_order", with no graph optimization
+    # - This is strictly for visualizing the map to see if everything looks right
+    soc, makespan = run_one_sim(num_agents=10, env_name="experiment_map", rule_order=[0,1,2,3,4,5,6], display=True, save_video=False)
+    print("Sum of Costs: ", soc)
+    print("Makespan: ", makespan)
     #---------------------------------------------------------------------------------------------------------------------------------------------#
     
-    #---------------------------------------------------------------------------------------------------------------------------------------------#
-    # Example Experiment for random-32-32-20, running the 25 random benchmark scenarios 10 times each.
-    #   4 Runs will be made:
-    # Exp1: Only default rule order [1,2,3,4,5,6] (in the code we write [0,1,2,3,4,5,6], but the rule order 0 does nothing so just ignore it when reading the code).
-    # Exp2: Only best rule order [4,3,1,5,6,2].
-    # Exp3: With best rule order and node vector encoding.
-    # Exp4: With best rule order and edge weight encoding.
-    # Lastly, comparing all of those with each other using two-sample t-test.
-    num_agents = 400
-    map_name = "empty-48-48"
-    scenario_type = "-random-"
-    # Generate the start and target positions for the agents from the benchmark scenario files
-    startpos_test, targetpos_test =  generate_start_and_target_to_list(number_of_experiments=1, number_of_agents=num_agents, env="Environments/" + map_name + ".map")
-
-    # Start up Dask
-    cluster = LocalCluster()
-    client = Client(cluster)
-    print(f"Link to dask dashboard {client.dashboard_link}")
-    #rule_order = [0,4,3,1,5,6,2]
-    rule_order = [0,1,2,3,4,5,6]
-
-
-    run_one_sim(num_agents=num_agents, env_name=map_name,rule_order=rule_order, positions_for_agents=[startpos_test[0], targetpos_test[0]], encoding_scheme="node_vector", encoding=chromosome, display=True, save_video=True)
-
-

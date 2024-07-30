@@ -41,9 +41,8 @@ from Swarm.swarm import Swarm
 from Swarm.swarm_IDCMAPF import Swarm_IDCMAPF
 from Renderer.renderer import Renderer
 #from Renderer.renderer_pygame import Renderer as Renderer_Pygame
+from IDCMAPF_Tests.tests import *
 from Simulator.simulator import Simulator
-from IDCMAPF_Tests.tests import * # Dårlig kodeskik at importere en hel fil
-from Logger.logger import Logger
 from GA.GA_Rules import GA_Priority_rules
 from generate_start_and_target import generate_start_and_target_to_list, generate_start_and_target_from_scenario, load_position_list_from_nplist
 

@@ -30,8 +30,6 @@ from Swarm.swarm_IDCMAPF import Swarm_IDCMAPF
 from Renderer.renderer import Renderer
 #from Renderer.renderer_pygame import Renderer as Renderer_Pygame
 from Simulator.simulator import Simulator
-from IDCMAPF_Tests.tests import * # Dårlig kodeskik at importere en hel fil
-from Logger.logger import Logger
 from GA.GA_Rules import GA_Priority_rules
 
 
