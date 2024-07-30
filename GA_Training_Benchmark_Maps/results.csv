@@ -1,2 +1,1 @@
-passage_large,40,edge_weight,0.1,5,50,0.0,0.0,0.0,"[0, 1, 2, 3, 4, 5, 6]",1521.69,159.268,0.0,359.85,1080.251,1883.974,189.346,0.0,499.797,1480.462
-passage_large,40,node_vector,0.1,5,50,0.0,0.0,0.0,"[0, 1, 2, 3, 4, 5, 6]",1615.292,163.528,0.001,389.422,1096.954,1879.715,187.946,0.003,495.3,1465.429
+map_name,num_agents,encoding_scheme_name,mutation_rate,environment_repetitions,pop_size,p_value_SOC,p_value_waits,p_value_conflicts,rule_order,best_cost,best_span,best_failrate,best_waits,best_conflicts,default_cost,default_span,default_failrate,default_waits,default_conflicts
