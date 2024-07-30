@@ -1,8 +1,6 @@
 import subprocess
 import os
 
-from generate_start_and_target import generate_start_and_target_to_numpy
-
 python_ver = 'python'
 command = [python_ver, "GA_Training_Benchmark_Maps/train_benchmark.py"]
 command_ttest = [python_ver, "GA_Training_Benchmark_Maps/ttest_benchmark_maps.py"]
