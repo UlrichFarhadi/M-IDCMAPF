@@ -1,4 +1,3 @@
-```plaintext
 # M-IDCMAPF
 
 This repository contains the code for the M-IDCMAPF algorithm, developed by Ulrich Farhadi and Henning Hess. For more information, visit [Henning Hess' GitHub](https://github.com/henning998).
@@ -28,7 +27,7 @@ This guide will walk you through creating your own map, evolving path costs, and
 
 5. **Configure Experiment Parameters:**
    Set up the cases, hyperparameters, and budget for the experiments in the `GA_Training_Benchmark_Maps/cases.csv` file. It should look like this:
-   ```
+   ```csv
    case_nr,map_name,num_agents,rule_order,encoding_scheme,mutation_rate,environment_repetitions,pop_size,budget,finished_amt
    experiment_map,15,"[0,1,2,3,4,5,6]",edge_weight,0.1,5,50,10000,3
    experiment_map,15,"[0,1,2,3,4,5,6]",node_vector,0.1,5,50,10000,3
@@ -53,4 +52,3 @@ This guide will walk you through creating your own map, evolving path costs, and
 ## License
 
 This project is licensed under the [MIT License](LICENSE).
-```
