@@ -32,14 +32,22 @@ This guide will walk you through creating your own map, evolving path costs, and
    experiment_map,15,"[0,1,2,3,4,5,6]",edge_weight,0.1,5,50,10000,3
    experiment_map,15,"[0,1,2,3,4,5,6]",node_vector,0.1,5,50,10000,3
    ```
-   Here, we run two experiments: one with `edge_weight` encoding and one with `node_vector` encoding on the "experiment_map" with 15 agents. The default rule order is `[0,1,2,3,4,5,6]` and the mutation rate is 0.1, with 5 resamples and a population size of 50. We use a budget of 10,000 fitness evaluations per experiment and repeat each experiment 3 times. The results will be saved in `chromosomes.csv`.
+   Here, we run two experiments: one with `edge_weight` encoding and one with `node_vector` encoding on the "experiment_map" with 15 agents. The default rule order is `[0,1,2,3,4,5,6]` and the mutation rate is 0.1, with 5 resamples and a population size of 50. We use a budget of 10,000 fitness evaluations per experiment and repeat each experiment 3 times. The chromosomes and their corresponding Sum of Costs result are saved in `GA_Training_Benchmark_Maps/chromosomes.csv`.
 
 6. **Generate Start and Target Configurations:**
    Generate the start and target configurations needed for evaluation. Run `Statistical_test_comparison/statistical_test_positions_generator.py` and set the following variables:
    - `map_name` to "experiment_map"
-   - `number_of_agents` to 15 (or other numbers if applicable)
+   - `number_of_agents` to 15
    
    This will create the necessary sets of start and target configurations.
+   Note: If you have cases of the "experiment_map" (in the cases.csv file) with a different amount of agents, let's say 30, so your cases.csv file looks like this:
+   ```csv
+   case_nr,map_name,num_agents,rule_order,encoding_scheme,mutation_rate,environment_repetitions,pop_size,budget,finished_amt
+   experiment_map,15,"[0,1,2,3,4,5,6]",edge_weight,0.1,5,50,10000,3
+   experiment_map,15,"[0,1,2,3,4,5,6]",node_vector,0.1,5,50,10000,3
+   experiment_map,30,"[0,1,2,3,4,5,6]",node_vector,0.1,5,50,10000,3
+   ```
+   The bottom case has 30 agents. This means you need to run the `Statistical_test_comparison/statistical_test_positions_generator.py` again, but with `number_of_agents` set to 30.
 
 7. **Run the Evolutionary Process:**
    Execute the evolutionary process by running `GA_Training_Benchmark_Maps/train_scheduler.py`. Before doing so, ensure that the `GA_Training_Benchmark_Maps/chromosomes.csv` file is cleared. This file is not automatically cleared to allow for the possibility of resuming training if stopped. To resume, simply run `train_scheduler.py` again. The process will continue from where it left off.
