@@ -1,1 +1,0 @@
-map_name,num_agents,encoding_scheme_name,mutation_rate,environment_repetitions,pop_size,p_value_SOC,p_value_waits,p_value_conflicts,rule_order,best_cost,best_span,best_failrate,best_waits,best_conflicts,default_cost,default_span,default_failrate,default_waits,default_conflicts

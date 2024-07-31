@@ -81,7 +81,7 @@ def main():
         headline = next(csv_reader)
         max_counter = 0
         for row in csv_reader:
-            if int(row[-1]) >= 3:
+            if int(row[-1]) <= 0:
                 max_counter += 1
                 continue
             else:
@@ -147,7 +147,7 @@ def main():
         for row in csv_reader:
             if map_name == row[map_name_csv] and num_agents == int(row[num_agents_csv]) and encoding_scheme_name == row[encoding_scheme_csv] and mutation_rate == float(row[mutation_rate_csv]) and population_size == int(row[pop_size_csv]) and env_repetition == int(row[environment_repetitions_csv]):
                 #new_row = row
-                row[-1] = str(int(row[-1]) + 1) # check if this update row
+                row[-1] = str(int(row[-1]) - 1) # check if this update row
                 #csv_writer.writerow(row)
             csv_writer.writerow(row)
 
