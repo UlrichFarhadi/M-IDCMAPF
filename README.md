@@ -1,6 +1,8 @@
-# M-IDCMAPF
+# Evolution of Path Costs for Efficient Decentralized Multi-agent Pathfinding
 
-This repository contains the code for the M-IDCMAPF algorithm, developed by Ulrich Farhadi and Henning Hess [Henning Hess' GitHub](https://github.com/henning998).
+This repository contains the code for the algorithm used in the paper "Evolution of Path Costs for Efficient Decentralized
+Multi-agent Pathfinding", developed by Ulrich Farhadi and Henning Hess [Henning Hess' GitHub](https://github.com/henning998).
+This project focuses on optimizing decentralized Multi-agent Pathfinding for robots in warehouse environments.
 
 Below is a demonstration video:
 
